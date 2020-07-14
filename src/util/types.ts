@@ -1,6 +1,29 @@
+import { Language } from "prism-react-renderer"
+
+export interface GithubUser {
+  login: string
+  avatarUrl: string
+}
+
 export interface Snip {
-  id: number
   title: string
-  body: string
-  createdAt: Date
+  content: string
+  id: string
+  language: Language
+}
+
+export interface FileData {
+  filename: string
+  language: string
+  content: string
+}
+
+export interface FilesData {
+  [file: string]: FileData
+}
+
+export interface GistData {
+  id: string
+  description: string
+  files: FilesData
 }
