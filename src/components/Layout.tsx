@@ -15,7 +15,7 @@ const Layout = ({ children, title, description, image, url }: Props) => {
   const defaultDescription = Branding.defaultDesciption
   const defaultImage = Branding.defaultLogo
   const defaultTitle = Branding.defaultTitle
-  const defaultUrl = Uris.base
+  const defaultUrl = process.env.NEXT_PUBLIC_BASE_URI
 
   return (
     <div className="page">
