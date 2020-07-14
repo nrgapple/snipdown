@@ -24,18 +24,25 @@ const Home = ({ code }: DataProps) => {
     console.log(code)
     if (code) {
       ;(async () => {
-        const resp = await fetch(
-          `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`,
-          {
-            mode: "no-cors",
+        try {
+          const resp = await fetch(
+            `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`,
+            {
+              mode: "no-cors",
+            }
+          )
+
+          const data = await resp.json()
+          console.log(data)
+          if (data && data.accessToken) {
+            localStorage.setItem("auth_token", data.accessToken)
+            setToken(data.accessToken)
+            setIsLoggedIn(true)
           }
-        )
-        console.log(resp)
-        setIsLoggedIn(true)
+        } catch (e) {
+          console.error(e)
+        }
       })()
-      // localStorage.setItem("auth_token", resp.data.accessToken)
-      // setToken(tokenQuery)
-      // setIsLoggedIn(true)
     }
   }, [code])
 
