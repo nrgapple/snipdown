@@ -1,5 +1,6 @@
 export const Uris = {
   base: `https://snipdown.vercel.app/`,
+  //base: `http://localhost:3000`,
 }
 
 export const Routes = {
