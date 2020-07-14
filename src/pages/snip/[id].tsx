@@ -17,7 +17,7 @@ const DevLog = ({
       title={`DevLog - ${snip.title} - ${dateFormatter(
         new Date(snip.createdAt)
       )}`}
-      url={`${Uris.base}${Routes.SNIP}/${snip.id}`}
+      url={`${process.env.NEXT_PUBLIC_BASE_URI}${Routes.SNIP}/${snip.id}`}
     />
   )
 }

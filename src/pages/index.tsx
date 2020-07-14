@@ -16,31 +16,37 @@ interface DataProps {
   code: string
 }
 
+interface GithubUser {
+  login: string
+  avatarUrl: string
+}
+
+type hasTokenType = "waiting" | "false" | "true"
+
 const Home = ({ code }: DataProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [token, setToken] = useState("")
+  const [hasToken, setHasToken] = useState<hasTokenType>("waiting")
+  const [user, setUser] = useState<GithubUser>()
 
   useEffect(() => {
-    if (code) {
+    if (code && hasToken === "false") {
       ;(async () => {
         try {
           const resp = await fetch(
-            `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`,
+            `${process.env.NEXT_PUBLIC_CORS_POXY}/authenticate/${code}`,
             {
-              method: "POST",
-              mode: "no-cors",
+              method: "GET",
               headers: {
-                "Content-Type": "application/json",
                 Accept: "application/json",
+                "Content-Type": "application/json",
               },
             }
           )
-
           const data = await resp.json()
-          console.log(data)
-          if (data && data.accessToken) {
-            localStorage.setItem("auth_token", data.accessToken)
-            setToken(data.accessToken)
+          if (data && data.token) {
+            localStorage.setItem("auth_token", data.token)
+            setToken(data.token)
             setIsLoggedIn(true)
           }
         } catch (e) {
@@ -48,34 +54,65 @@ const Home = ({ code }: DataProps) => {
         }
       })()
     }
-  }, [code])
+  }, [code, hasToken])
 
   useEffect(() => {
-    setToken(localStorage.getItem("auth_token") ?? "")
+    const token = localStorage.getItem("auth_token") ?? ""
+    if (token) {
+      setToken(token)
+      setIsLoggedIn(true)
+      setHasToken("true")
+    } else {
+      setHasToken("false")
+    }
   }, [])
+
+  useEffect(() => {
+    if (token) {
+      getUser()
+    }
+  }, [token])
+
+  const getUser = async () => {
+    const octokit = new Octokit({
+      auth: token,
+    })
+
+    const { data } = await octokit.request(`/user`)
+    setUser({ ...data, avatarUrl: data.avatar_url })
+  }
 
   const getGists = async () => {
     const octokit = new Octokit({
       auth: token,
     })
 
-    const { data } = await octokit.request(`/user`)
+    const { data } = await octokit.request(`/gists`)
     console.log(data)
   }
-
-  console.log(token)
 
   return (
     <Layout>
       <div>
-        <a
-          href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${Uris.base}&state=123456&response_type=code`}
-        >
-          {isLoggedIn ? "Hey!" : "Login"}
-        </a>
-      </div>
-      <div>
-        <button onClick={() => getGists()}>Make request</button>
+        {isLoggedIn ? (
+          user && (
+            <div>
+              <span>
+                <img width="30px" src={user.avatarUrl} />
+              </span>
+              <span>{user.login}</span>
+            </div>
+          )
+        ) : (
+          <a
+            href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code`}
+          >
+            {isLoggedIn ? "Hey!" : "Login"}
+          </a>
+        )}
+        <div>
+          <button onClick={getGists}>Get Gists</button>
+        </div>
       </div>
     </Layout>
   )

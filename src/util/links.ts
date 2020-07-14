@@ -1,6 +1,5 @@
 export const Uris = {
-  base: `https://snipdown.vercel.app/`,
-  //base: `http://localhost:3000`,
+  corsPoxy: `https://snipdown.herokuapp.com`,
 }
 
 export const Routes = {
