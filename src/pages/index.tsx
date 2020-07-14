@@ -17,6 +17,7 @@ import { Octokit } from "@octokit/core"
 import { GetServerSideProps } from "next"
 import { Container } from "next/app"
 import Highlight, { defaultProps, Language } from "prism-react-renderer"
+import Editor from "../components/Editor"
 
 interface DataProps {
   code: string
@@ -51,6 +52,19 @@ interface GistData {
 }
 
 type hasTokenType = "waiting" | "false" | "true"
+
+const camelToWords = (input: string) => {
+  const result = input.replace(/([A-Z])/g, " $1")
+  return result.charAt(0).toUpperCase() + result.slice(1)
+}
+
+const removeExtension = (file: string) => {
+  return file.replace(/(.sd.md)/g, "")
+}
+
+const isSnipFile = (file: string) => {
+  return RegExp(/(.sd.md)/g).test(file)
+}
 
 const Home = ({ code }: DataProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -127,8 +141,11 @@ const Home = ({ code }: DataProps) => {
 
     const resp = await octokit.request(`/gists`)
     const data: GistData[] = resp.data
+    const snipGistsData: GistData[] = data.filter((x) =>
+      isSnipFile(x.files[Object.keys(x.files)[0]].filename)
+    )
     setSnips((curr) =>
-      data.map((x) => {
+      snipGistsData.map((x) => {
         const file = x.files[Object.keys(x.files)[0]]
         return {
           title: file.filename,
@@ -158,80 +175,61 @@ const Home = ({ code }: DataProps) => {
 
   return (
     <Layout>
-      <div>
-        <Navbar bg="dark" variant="dark">
-          <Navbar.Brand>SnipDown</Navbar.Brand>
-          <Nav className="mr-auto">
-            {snips && (
-              <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
-                {snips.map((x) => (
-                  <Dropdown.Item onClick={() => getGist(x.id)}>
-                    {x.title}
-                  </Dropdown.Item>
-                ))}
-              </NavDropdown>
-            )}
-          </Nav>
-          <Nav>
-            {isLoggedIn ? (
-              user && (
-                <Dropdown id="collasible-nav-dropdown">
-                  <Dropdown.Toggle variant="clear">
-                    <img width="30px" src={user.avatarUrl} />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>Logout</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              )
-            ) : (
-              <Nav.Link
-                href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code`}
-              >
-                Login
-              </Nav.Link>
-            )}
-          </Nav>
-        </Navbar>
-        <Container fluid>
-          <Row>
-            <Col xs={12}>
-              {content && (
-                <Card>
-                  <Card.Title>{content.title}</Card.Title>
-                  <Card.Subtitle>{content.language}</Card.Subtitle>
+      <Navbar bg="dark" variant="dark">
+        <Navbar.Brand>SnipDown</Navbar.Brand>
+        <Nav className="mr-auto">
+          {snips && (
+            <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
+              {snips.map((x) => (
+                <Dropdown.Item onClick={() => getGist(x.id)}>
+                  {camelToWords(removeExtension(x.title))}
+                </Dropdown.Item>
+              ))}
+            </NavDropdown>
+          )}
+        </Nav>
+        <Nav>
+          {isLoggedIn ? (
+            user && (
+              <Dropdown id="collasible-nav-dropdown">
+                <Dropdown.Toggle variant="clear">
+                  <img width="30px" src={user.avatarUrl} />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item>Logout</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            )
+          ) : (
+            <Nav.Link
+              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code`}
+            >
+              Login with Github
+            </Nav.Link>
+          )}
+        </Nav>
+      </Navbar>
+      <Container fluid>
+        <Row>
+          <Col>
+            {content && (
+              <Card>
+                <Card.Body>
+                  <Card.Title>
+                    {camelToWords(removeExtension(content.title))}
+                  </Card.Title>
                   <Card.Text>
-                    <Highlight
-                      {...defaultProps}
-                      code={content.content}
+                    <Editor
                       language={content.language}
-                    >
-                      {({
-                        className,
-                        style,
-                        tokens,
-                        getLineProps,
-                        getTokenProps,
-                      }) => (
-                        <pre className={className} style={style}>
-                          {tokens.map((line, i) => (
-                            <div {...getLineProps({ line, key: i })}>
-                              {line.map((token, key) => (
-                                <span {...getTokenProps({ token, key })} />
-                              ))}
-                            </div>
-                          ))}
-                        </pre>
-                      )}
-                    </Highlight>
+                      initialCode={content.content}
+                    />
                   </Card.Text>
-                </Card>
-              )}
-            </Col>
-          </Row>
-        </Container>
-        <div></div>
-      </div>
+                </Card.Body>
+              </Card>
+            )}
+          </Col>
+        </Row>
+      </Container>
     </Layout>
   )
 }

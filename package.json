@@ -16,7 +16,9 @@
     "prism-react-renderer": "^1.1.1",
     "react": "16.13.1",
     "react-bootstrap": "^1.1.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "react-simple-code-editor": "^0.11.0",
+    "styled-components": "^5.1.1"
   },
   "devDependencies": {
     "@types/node": "^14.0.20",
