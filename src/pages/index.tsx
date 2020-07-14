@@ -21,7 +21,6 @@ const Home = ({ code }: DataProps) => {
   const [token, setToken] = useState("")
 
   useEffect(() => {
-    console.log(code)
     if (code) {
       ;(async () => {
         try {
@@ -29,6 +28,9 @@ const Home = ({ code }: DataProps) => {
             `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`,
             {
               mode: "no-cors",
+              headers: {
+                Accept: "application/json",
+              },
             }
           )
 
