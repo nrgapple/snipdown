@@ -25,7 +25,10 @@ const Home = ({ code }: DataProps) => {
     if (code) {
       ;(async () => {
         const resp = await fetch(
-          `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`
+          `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`,
+          {
+            mode: "no-cors",
+          }
         )
         console.log(resp)
         setIsLoggedIn(true)
