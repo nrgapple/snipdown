@@ -28,6 +28,7 @@ const Home = ({ code }: DataProps) => {
           `https://github.com/login/oauth/access_token?client_secret=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET}&client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&code=${code}`
         )
         console.log(resp)
+        setIsLoggedIn(true)
       })()
       // localStorage.setItem("auth_token", resp.data.accessToken)
       // setToken(tokenQuery)
