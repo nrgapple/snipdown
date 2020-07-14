@@ -32,12 +32,9 @@ export const getServerSideProps: GetServerSideProps<DataProps> = async (
       createdAt: new Date(),
       id: 1,
     }
-
-    // const resp = await fetch(
-    //   `https://progressiveapp.store/api/public/log/${context.params.id}`
-    // )
-    // const devLog: DevLogType = await resp.json()
-    //console.log(devLog)
+    //const resp await fetch(`${process.env.API_URL}`)
+    //const newSnip: Snip = await resp.json()
+    //console.log(newSnip)
     return {
       props: {
         snip: newSnip,
