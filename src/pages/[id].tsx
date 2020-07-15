@@ -43,6 +43,26 @@ interface DataProps {
 
 type hasTokenType = "waiting" | "false" | "true"
 
+const defaultText = `# Add a title
+
+1. Give
+2. Some
+3. Steps
+
+[link-it](https://google.com)
+
+![image-it](https://image.url)
+
+## Talk about something related
+
+Something related.
+
+|Table| It|
+|-----|---|
+|123  | 09|
+|456  | 87|
+`
+
 const SnipDown = ({ code, snip }: DataProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [token, setToken] = useState("")
@@ -55,7 +75,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
     id: "",
   } as Snip)
   const [canEdit, setCanEdit] = useState(false)
-  const [isEdit, setIsEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(true)
 
   useEffect(() => {
     if (code && hasToken === "false") {
@@ -112,6 +132,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
   useEffect(() => {
     if (snip) {
+      setIsEdit(false)
       setContent(snip)
     }
   }, [snip])
@@ -318,10 +339,19 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 </Button>
               ) : (
                 <Button
-                  className="float-right bg-secondary border-secondary"
+                  className={`float-right ${
+                    !(content.content && content.title)
+                      ? "bg-transparent text-secondary border-secondary"
+                      : "btn-secondary"
+                  }`}
                   onClick={() => createGist()}
+                  disabled={!content.content || !content.title}
                 >
-                  Create
+                  {!content.title
+                    ? "Add a Title"
+                    : !content.content
+                    ? "Add some Content"
+                    : "Create"}
                 </Button>
               ))}
           </Col>
@@ -333,11 +363,13 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 <Card.Body>
                   {isEdit ? (
                     <Editor
+                      style={{ minHeight: "60vh" }}
                       language="markdown"
                       value={content.content}
                       onChange={(value) =>
                         setContent({ ...content, content: value })
                       }
+                      placeholder={defaultText}
                     />
                   ) : (
                     <ReactMarkdown

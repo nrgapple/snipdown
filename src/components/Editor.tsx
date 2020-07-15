@@ -1,4 +1,10 @@
-import React, { Fragment, Component, useState, useEffect } from "react"
+import React, {
+  Fragment,
+  Component,
+  useState,
+  useEffect,
+  ReactChild,
+} from "react"
 import CSS from "csstype"
 
 import SimpleEditor from "react-simple-code-editor"
@@ -26,9 +32,19 @@ interface Props {
   language: Language
   onChange: (code: string) => void
   value: string
+  placeholder?: string
+  textareaClassName?: string
+  style: React.CSSProperties
 }
 
-const Editor = ({ language, onChange, value }: Props) => {
+const Editor = ({
+  language,
+  onChange,
+  value,
+  placeholder,
+  textareaClassName,
+  style,
+}: Props) => {
   const onValueChange = (code: string) => {
     onChange(code)
   }
@@ -56,7 +72,9 @@ const Editor = ({ language, onChange, value }: Props) => {
       highlight={highlight}
       padding={10}
       insertSpaces
-      style={styles.root}
+      style={style}
+      placeholder={placeholder}
+      textareaClassName={textareaClassName}
     />
   )
 }
