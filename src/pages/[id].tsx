@@ -21,15 +21,10 @@ import {
   Row,
   Col,
   Card,
-  Tabs,
-  Tab,
   Button,
-  CardGroup,
   InputGroup,
   FormControl,
   NavLink,
-  NavItem,
-  SplitButton,
   ButtonGroup,
 } from "react-bootstrap"
 import { Container } from "next/app"
@@ -39,7 +34,7 @@ import CodeBlock from "../components/CodeBlock"
 import htmlToImage from "html-to-image"
 //@ts-ignore
 import download from "downloadjs"
-import DropdownItem from "react-bootstrap/esm/DropdownItem"
+import { LogoGithubIcon } from "@primer/octicons-react"
 
 interface DataProps {
   code?: string
@@ -323,7 +318,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
             <Nav.Link
               href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code&scope=gist`}
             >
-              Login with Github
+              Login with{" "}
+              <span>
+                <LogoGithubIcon />
+              </span>
             </Nav.Link>
           )}
         </Nav>
