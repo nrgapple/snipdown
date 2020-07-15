@@ -2,13 +2,8 @@ import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import Router from "next/router"
 import Layout from "../components/Layout"
-import { InferGetServerSidePropsType, GetServerSideProps } from "next"
-import {
-  dateFormatter,
-  isSnipFile,
-  camelToWords,
-  removeExtension,
-} from "../util"
+import { GetServerSideProps } from "next"
+import { isSnipFile, camelToWords, removeExtension } from "../util"
 import { Snip, GithubUser, GistData, FileData } from "../util/types"
 import { Uris, Routes } from "../util/links"
 import { Octokit } from "@octokit/core"
@@ -79,9 +74,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
     content: "",
     id: "",
   } as Snip)
-  const [canEdit, setCanEdit] = useState(false)
   const [isEdit, setIsEdit] = useState(true)
-  const [dataUrl, setDataUrl] = useState<string>()
   const mdRef = useRef<any>(null)
 
   useEffect(() => {
@@ -276,6 +269,13 @@ const SnipDown = ({ code, snip }: DataProps) => {
     }
   }
 
+  const allowEdit = () => {
+    return (
+      isLoggedIn &&
+      (!snip || !snip.id || (snips && snips?.find((x) => x.id === snip.id)))
+    )
+  }
+
   return (
     <Layout
       title={snip ? snip.title : undefined}
@@ -304,7 +304,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
           </Link>
         </Nav>
         <Nav>
-          {isLoggedIn ? (
+          {allowEdit() ? (
             user && (
               <Dropdown id="collasible-nav-dropdown" alignRight>
                 <Dropdown.Toggle variant="clear">
@@ -354,13 +354,15 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 {camelToWords(removeExtension(content.title))}
               </Card.Title>
             )}
-            <Button
-              className="float-left bg-primary border-primary"
-              onClick={() => setIsEdit(!isEdit)}
-              disabled={!content.title || !content.content}
-            >
-              {isEdit ? "Preview" : "Edit"}
-            </Button>
+            {allowEdit() && (
+              <Button
+                className="float-left bg-primary border-primary"
+                onClick={() => setIsEdit(!isEdit)}
+                disabled={!content.title || !content.content}
+              >
+                {isEdit ? "Preview" : "Edit"}
+              </Button>
+            )}
             {isEdit &&
               (content.id ? (
                 <Button
@@ -405,10 +407,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
                     <Dropdown.Item onClick={() => handlePng()}>
                       PNG
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handlePng()}>
+                    <Dropdown.Item onClick={() => handleJpeg()}>
                       JPEG
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handlePng()}>
+                    <Dropdown.Item onClick={() => handleSvg()}>
                       SVG
                     </Dropdown.Item>
                   </Dropdown.Menu>
@@ -422,7 +424,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
             {content && (
               <Card className="shadow" ref={mdRef}>
                 <Card.Body>
-                  {isEdit ? (
+                  {isEdit && isLoggedIn ? (
                     <Editor
                       style={{ minHeight: "60vh" }}
                       language="markdown"
