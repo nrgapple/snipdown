@@ -6,6 +6,12 @@ textarea {
   outline: none;
 }
 
+body {
+  overflow-x: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+}
+
 button {
   outline: none;
   box-shadow: none !important;
