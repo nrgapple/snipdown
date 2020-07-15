@@ -77,7 +77,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
     id: "",
   } as Snip)
   const [canEdit, setCanEdit] = useState(false)
-  const [isEdit, setIsEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(true)
   const [dataUrl, setDataUrl] = useState<string>()
   const mdRef = useRef<any>(null)
 
