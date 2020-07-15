@@ -377,13 +377,13 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   onClick={() => createGist()}
                   disabled={!content.content || !content.title || !isLoggedIn}
                 >
-                  {isLoggedIn
-                    ? !content.title
-                      ? "Add a Title"
-                      : !content.content
-                      ? "Add some Content"
-                      : "Create"
-                    : "Login to Create"}
+                  {!content.title
+                    ? "Add a Title"
+                    : !content.content
+                    ? "Add some Content"
+                    : !isLoggedIn
+                    ? "Login to Create"
+                    : "Create"}
                 </Button>
               ))}
 
