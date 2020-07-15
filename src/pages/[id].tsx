@@ -377,7 +377,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                       : "btn-secondary"
                   }`}
                   onClick={() => createGist()}
-                  disabled={!content.content || !content.title}
+                  disabled={!content.content || !content.title || !isLoggedIn}
                 >
                   {isLoggedIn
                     ? !content.title
