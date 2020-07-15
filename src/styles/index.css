@@ -27,3 +27,19 @@ button {
   border-radius: 10px;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);
 }
+
+.line-bottom {
+  border: none !important;
+  border-bottom: 1px solid !important;
+  border-radius: 0px !important;
+}
+
+.line-left {
+  border-left: 1px solid !important;
+}
+
+button {
+  height: 27px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

@@ -31,7 +31,7 @@ import CodeBlock from "../components/CodeBlock"
 import htmlToImage from "html-to-image"
 //@ts-ignore
 import download from "downloadjs"
-import { LogoGithubIcon } from "@primer/octicons-react"
+import { MarkGithubIcon } from "@primer/octicons-react"
 
 interface DataProps {
   code?: string
@@ -314,12 +314,14 @@ const SnipDown = ({ code, snip }: DataProps) => {
             )
           ) : (
             <Nav.Link
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
               href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code&scope=gist`}
             >
-              Login with{" "}
-              <span>
-                <LogoGithubIcon />
-              </span>
+              Login with GitHub
+              <MarkGithubIcon className="pl-1" size="small" />
             </Nav.Link>
           )}
         </Nav>
@@ -327,37 +329,20 @@ const SnipDown = ({ code, snip }: DataProps) => {
       <Container fluid>
         {!isInitLoading ? (
           <>
-            <Row className="justify-content-center pb-4">
-              <Col xs={11} md={9} lg={7} className="">
-                {isEdit && !content.id ? (
-                  <InputGroup className="pb-2">
-                    <FormControl
-                      placeholder="Title"
-                      aria-label="Title"
-                      aria-describedby="basic-addon2"
-                      onChange={(e) =>
-                        setContent({
-                          ...content,
-                          title: e.currentTarget.value,
-                        })
-                      }
-                      value={content.title}
-                    />
-                    <InputGroup.Append>
-                      <InputGroup.Text id="basic-addon2">
-                        .sd.md
-                      </InputGroup.Text>
-                    </InputGroup.Append>
-                  </InputGroup>
-                ) : (
-                  <Card.Title className="pb-2">
-                    {camelToWords(removeExtension(content.title))}
-                  </Card.Title>
-                )}
+            <Row className="justify-content-center pb-2">
+              <Col
+                xs={11}
+                md={9}
+                lg={7}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 {allowEdit() && (
                   <ButtonGroup className="pr-2">
                     <Button
-                      className="float-left bg-primary border-primary"
+                      className="float-left bg-transparent text-primary line-bottom"
                       onClick={() => setIsEdit(!isEdit)}
                       disabled={!content.title || !content.content}
                     >
@@ -368,18 +353,14 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 {isEdit &&
                   (content.id ? (
                     <Button
-                      className="float-right bg-secondary border-secondary"
+                      className="float-right bg-transparent text-secondary line-bottom"
                       onClick={() => updateGist()}
                     >
                       {!isLoadingGist ? "Save" : <Spinner animation="grow" />}
                     </Button>
                   ) : (
                     <Button
-                      className={`float-right ${
-                        !(content.content && content.title && isLoggedIn)
-                          ? "bg-transparent text-secondary border-secondary"
-                          : "btn-secondary"
-                      }`}
+                      className="float-right bg-transparent text-secondary line-bottom"
                       onClick={() => createGist()}
                       disabled={
                         !content.content || !content.title || !isLoggedIn
@@ -403,8 +384,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
                 {!isEdit && (
                   <>
-                    <Dropdown as={ButtonGroup}>
-                      <Button onClick={() => handlePng()} variant="success">
+                    <Dropdown
+                      as={ButtonGroup}
+                      className="bg-transparent"
+                    >
+                      <Button className="bg-transparent text-secondary line-bottom" onClick={() => handlePng()} variant="success">
                         Export
                       </Button>
 
@@ -412,6 +396,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         split
                         variant="success"
                         id="dropdown-split-basic"
+                        className="bg-transparent text-secondary line-bottom line-left"
                       />
                       <Dropdown.Menu>
                         <Dropdown.Item onClick={() => handlePng()}>
@@ -429,6 +414,26 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 )}
               </Col>
             </Row>
+            {isEdit && !content.id && (
+              <Row className="justify-content-center pb-3">
+                <Col xs={11} md={9} lg={7}>
+                  <InputGroup>
+                    <FormControl
+                      placeholder="Title"
+                      aria-label="Title"
+                      aria-describedby="basic-addon2"
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          title: e.currentTarget.value,
+                        })
+                      }
+                      value={content.title}
+                    />
+                  </InputGroup>
+                </Col>
+              </Row>
+            )}
             <Row className="justify-content-center">
               <Col xs={11} md={9} lg={7}>
                 {content && (
