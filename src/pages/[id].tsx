@@ -19,9 +19,13 @@ import {
   Row,
   Col,
   Card,
+  Tabs,
+  Tab,
 } from "react-bootstrap"
 import { Container } from "next/app"
 import Editor from "../components/Editor"
+import ReactMarkdown from "react-markdown"
+import CodeBlock from "../components/CodeBlock"
 
 interface DataProps {
   code?: string
@@ -206,10 +210,20 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   <Card.Title>
                     {camelToWords(removeExtension(content.title))}
                   </Card.Title>
-                  <Editor
-                    language={content.language}
-                    initialCode={content.content}
-                  />
+                  <Tabs defaultActiveKey="editor">
+                    <Tab eventKey="editor" title="Editor">
+                      <Editor
+                        language={content.language}
+                        initialCode={content.content}
+                      />
+                    </Tab>
+                    <Tab eventKey="preview" title="Preview">
+                      <ReactMarkdown
+                        source={content.content}
+                        renderers={{ code: CodeBlock }}
+                      />
+                    </Tab>
+                  </Tabs>
                 </Card.Body>
               </Card>
             )}
