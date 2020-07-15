@@ -5,7 +5,7 @@ import Layout from "../components/Layout"
 import { GetServerSideProps } from "next"
 import { isSnipFile, camelToWords, removeExtension } from "../util"
 import { Snip, GithubUser, GistData, FileData } from "../util/types"
-import { Uris, Routes } from "../util/links"
+import { Routes } from "../util/links"
 import { Octokit } from "@octokit/core"
 import { Language } from "prism-react-renderer"
 import {
@@ -21,6 +21,8 @@ import {
   FormControl,
   NavLink,
   ButtonGroup,
+  Spinner,
+  Toast,
 } from "react-bootstrap"
 import { Container } from "next/app"
 import Editor from "../components/Editor"
@@ -59,7 +61,8 @@ Something related.
 `
 
 const SnipDown = ({ code, snip }: DataProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isInitLoading, setIsInitLoading] = useState<boolean>(true)
+  const [isLoadingGist, setIsLoadingGist] = useState<boolean>(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [token, setToken] = useState("")
   const [hasToken, setHasToken] = useState<hasTokenType>("waiting")
@@ -71,6 +74,8 @@ const SnipDown = ({ code, snip }: DataProps) => {
     id: "",
   } as Snip)
   const [isEdit, setIsEdit] = useState(true)
+  const [show, setShow] = useState(false)
+  const [message, setMessage] = useState<string>()
   const mdRef = useRef<any>(null)
 
   useEffect(() => {
@@ -114,7 +119,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         setHasToken("false")
       }
     } finally {
-      setIsLoading(false)
+      setIsInitLoading(false)
     }
   }, [])
 
@@ -182,16 +187,18 @@ const SnipDown = ({ code, snip }: DataProps) => {
     }
 
     try {
+      setIsLoadingGist(true)
       const resp = await octokit.request(`PATCH /gists/${content.id}`, {
         gist_id: content.id,
         files: { [content.title]: file },
         description: "update",
       })
-      if (resp.status === 200) {
-        console.log("Howdy, It Worked!")
-      }
+      setMessage("Updated")
+      setShow(true)
     } catch (e) {
       console.log(e)
+    } finally {
+      setIsLoadingGist(false)
     }
   }
 
@@ -208,33 +215,19 @@ const SnipDown = ({ code, snip }: DataProps) => {
     }
 
     try {
+      setIsLoadingGist(true)
       const resp = await octokit.request(`POST /gists`, {
         files: { [content.title]: file },
       })
-      if (resp.status === 200) {
-        console.log("Howdy, It Worked!")
-      }
-
       const { id } = resp.data
       Router.push("/[id]", `/${id}`)
+      setMessage("Created")
+      setShow(true)
     } catch (e) {
       console.log(e)
+    } finally {
+      setIsLoadingGist(false)
     }
-  }
-
-  const getGist = async (id: string) => {
-    const octokit = new Octokit({
-      auth: token,
-    })
-
-    const resp = await octokit.request(`/gists/${id}`)
-    const gist: GistData = resp.data
-    const file = gist.files[Object.keys(gist.files)[0]]
-    setContent({
-      id: id,
-      title: file.filename,
-      content: file.content,
-    })
   }
 
   const logout = () => {
@@ -248,7 +241,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const handlePng = () => {
     if (mdRef && content.title) {
       htmlToImage.toPng(mdRef.current).then((link) => {
-        download(link, `${content.title}.png`)
+        download(link, `${content.title.split(".")[0]}.png`)
       })
     }
   }
@@ -256,7 +249,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const handleJpeg = () => {
     if (mdRef && content.title) {
       htmlToImage.toJpeg(mdRef.current).then((link) => {
-        download(link, `${content.title}.jpeg`)
+        download(link, `${content.title.split(".")[0]}.jpeg`)
       })
     }
   }
@@ -264,7 +257,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const handleSvg = () => {
     if (mdRef && content.title) {
       htmlToImage.toSvgDataURL(mdRef.current).then((link) => {
-        download(link, `${content.title}.svg`)
+        download(link, `${content.title.split(".")[0]}.svg`)
       })
     }
   }
@@ -332,7 +325,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         </Nav>
       </Navbar>
       <Container fluid>
-        {!isLoading ? (
+        {!isInitLoading ? (
           <>
             <Row className="justify-content-center pb-4">
               <Col xs={11} md={9} lg={7} className="">
@@ -376,7 +369,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                       className="float-right bg-secondary border-secondary"
                       onClick={() => updateGist()}
                     >
-                      Save
+                      {!isLoadingGist ? "Save" : <Spinner animation="grow" />}
                     </Button>
                   ) : (
                     <Button
@@ -390,13 +383,19 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         !content.content || !content.title || !isLoggedIn
                       }
                     >
-                      {isLoggedIn
-                        ? !content.title
-                          ? "Add a Title"
-                          : !content.content
-                          ? "Add some Content"
-                          : "Create"
-                        : "Login to Create"}
+                      {isLoggedIn ? (
+                        !content.title ? (
+                          "Add a Title"
+                        ) : !content.content ? (
+                          "Add some Content"
+                        ) : !isLoadingGist ? (
+                          "Create"
+                        ) : (
+                          <Spinner animation="grow" />
+                        )
+                      ) : (
+                        "Login to Create"
+                      )}
                     </Button>
                   ))}
 
@@ -433,7 +432,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 {content && (
                   <Card className="shadow" ref={mdRef}>
                     <Card.Body>
-                      {isEdit && isLoggedIn ? (
+                      {isEdit ? (
                         <Editor
                           style={{ minHeight: "60vh" }}
                           language="markdown"
@@ -458,6 +457,22 @@ const SnipDown = ({ code, snip }: DataProps) => {
         ) : (
           <div />
         )}
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Toast
+            onClose={() => setShow(false)}
+            show={show}
+            delay={3000}
+            autohide
+          >
+            <Toast.Body>{message}</Toast.Body>
+          </Toast>
+        </div>
       </Container>
     </Layout>
   )
