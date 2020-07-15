@@ -372,7 +372,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
               ) : (
                 <Button
                   className={`float-right ${
-                    !(content.content && content.title)
+                    !(content.content && content.title && isLoggedIn)
                       ? "bg-transparent text-secondary border-secondary"
                       : "btn-secondary"
                   }`}
