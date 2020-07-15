@@ -357,7 +357,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
             <Button
               className="float-left bg-primary border-primary"
               onClick={() => setIsEdit(!isEdit)}
-              disabled={!content.title && !content.content}
+              disabled={!content.title || !content.content}
             >
               {isEdit ? "Preview" : "Edit"}
             </Button>
