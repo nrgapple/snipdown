@@ -3,42 +3,35 @@ import CSS from "csstype"
 
 import SimpleEditor from "react-simple-code-editor"
 import Highlight, { defaultProps, Language } from "prism-react-renderer"
-import theme from "prism-react-renderer/themes/nightOwl"
+import theme from "prism-react-renderer/themes/duotoneLight"
 
-const exampleCode = `
-(function someDemo() {
-  var test = "Hello World!";
-  console.log(test);
-})();
+// const exampleCode = `
+// (function someDemo() {
+//   var test = "Hello World!";
+//   console.log(test);
+// })();
 
-return () => <App />;
-`
+// return () => <App />;
+// `
 
 const styles = {
   root: {
     boxSizing: "border-box",
-    fontFamily: '"Dank Mono", "Fira Code", monospace',
-    ...theme.plain,
+    fontFamily: '"Dank Mono", monospace',
+    ...theme,
   } as CSS.Properties,
 }
 
 interface Props {
-  initialCode?: string
   language: Language
+  onChange: (code: string) => void
+  value: string
 }
 
-const Editor = ({ initialCode, language }: Props) => {
-  const [code, setCode] = useState(exampleCode)
-
+const Editor = ({ language, onChange, value }: Props) => {
   const onValueChange = (code: string) => {
-    setCode(code)
+    onChange(code)
   }
-
-  useEffect(() => {
-    if (initialCode) {
-      setCode(initialCode)
-    }
-  }, [initialCode])
 
   const highlight = (code: string) => (
     <Highlight {...defaultProps} theme={theme} code={code} language={language}>
@@ -58,10 +51,11 @@ const Editor = ({ initialCode, language }: Props) => {
 
   return (
     <SimpleEditor
-      value={code}
+      value={value}
       onValueChange={onValueChange}
       highlight={highlight}
       padding={10}
+      insertSpaces
       style={styles.root}
     />
   )

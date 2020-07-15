@@ -21,11 +21,14 @@ import {
   Card,
   Tabs,
   Tab,
+  Button,
+  CardGroup,
 } from "react-bootstrap"
 import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
+import dynamic from "next/dynamic"
 
 interface DataProps {
   code?: string
@@ -42,6 +45,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const [snips, setSnips] = useState<Snip[]>()
   const [content, setContent] = useState<Snip>()
   const [canEdit, setCanEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
 
   useEffect(() => {
     if (code && hasToken === "false") {
@@ -205,25 +209,30 @@ const SnipDown = ({ code, snip }: DataProps) => {
         <Row>
           <Col>
             {content && (
-              <Card>
-                <Card.Body>
+              <Card style={{ margin: "8px" }}>
+                <Card.Header>
                   <Card.Title>
                     {camelToWords(removeExtension(content.title))}
                   </Card.Title>
-                  <Tabs defaultActiveKey="editor">
-                    <Tab eventKey="editor" title="Editor">
-                      <Editor
-                        language={content.language}
-                        initialCode={content.content}
-                      />
-                    </Tab>
-                    <Tab eventKey="preview" title="Preview">
-                      <ReactMarkdown
-                        source={content.content}
-                        renderers={{ code: CodeBlock }}
-                      />
-                    </Tab>
-                  </Tabs>
+                  <Button onClick={() => setIsEdit(!isEdit)}>
+                    {isEdit ? "Preview" : "Edit"}
+                  </Button>
+                </Card.Header>
+                <Card.Body>
+                  {isEdit ? (
+                    <Editor
+                      language={content.language}
+                      value={content.content}
+                      onChange={(value) =>
+                        setContent({ ...content, content: value })
+                      }
+                    />
+                  ) : (
+                    <ReactMarkdown
+                      source={content.content}
+                      renderers={{ code: CodeBlock }}
+                    />
+                  )}
                 </Card.Body>
               </Card>
             )}
