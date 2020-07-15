@@ -388,7 +388,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
                       as={ButtonGroup}
                       className="bg-transparent"
                     >
-                      <Button className="bg-transparent text-secondary line-bottom" onClick={() => handlePng()} variant="success">
+                      <Button
+                        className="bg-transparent text-secondary line-bottom"
+                        onClick={() => handlePng()}
+                        variant="success"
+                      >
                         Export
                       </Button>
 
@@ -396,7 +400,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         split
                         variant="success"
                         id="dropdown-split-basic"
-                        className="bg-transparent text-secondary line-bottom line-left"
+                        className="bg-transparent text-secondary line-bottom"
                       />
                       <Dropdown.Menu>
                         <Dropdown.Item onClick={() => handlePng()}>
