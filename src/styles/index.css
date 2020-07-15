@@ -8,7 +8,7 @@ textarea {
 
 button {
   outline: none;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .snip-header {

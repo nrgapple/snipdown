@@ -27,13 +27,14 @@ import {
   CardGroup,
   InputGroup,
   FormControl,
+  NavLink,
+  NavItem,
 } from "react-bootstrap"
 import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
-import dynamic from "next/dynamic"
-import context from "react-bootstrap/esm/AccordionContext"
+import { PlusIcon } from "@primer/octicons-react"
 
 interface DataProps {
   code?: string
@@ -246,13 +247,20 @@ const SnipDown = ({ code, snip }: DataProps) => {
               ))}
             </NavDropdown>
           )}
+          <Link href="/" passHref>
+            <NavLink>New</NavLink>
+          </Link>
         </Nav>
         <Nav>
           {isLoggedIn ? (
             user && (
               <Dropdown id="collasible-nav-dropdown">
                 <Dropdown.Toggle variant="clear">
-                  <img width="30px" src={user.avatarUrl} />
+                  <img
+                    width="30px"
+                    src={user.avatarUrl}
+                    className="rounded-circle"
+                  />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
@@ -269,48 +277,59 @@ const SnipDown = ({ code, snip }: DataProps) => {
         </Nav>
       </Navbar>
       <Container fluid>
+        <Row className="justify-content-center pb-4">
+          <Col xs={11} md={9} lg={7} className="">
+            {isEdit && !content.id ? (
+              <InputGroup>
+                <FormControl
+                  placeholder="Title"
+                  aria-label="Title"
+                  aria-describedby="basic-addon2"
+                  onChange={(e) =>
+                    setContent({
+                      ...content,
+                      title: e.currentTarget.value,
+                    })
+                  }
+                  value={content.title}
+                />
+                <InputGroup.Append>
+                  <InputGroup.Text id="basic-addon2">.sd.md</InputGroup.Text>
+                </InputGroup.Append>
+              </InputGroup>
+            ) : (
+              <Card.Title>
+                {camelToWords(removeExtension(content.title))}
+              </Card.Title>
+            )}
+            <Button
+              className="float-left bg-primary border-secondary"
+              onClick={() => setIsEdit(!isEdit)}
+            >
+              {isEdit ? "Preview" : "Edit"}
+            </Button>
+            {isEdit &&
+              (content.id ? (
+                <Button
+                  className="float-right bg-secondary border-secondary"
+                  onClick={() => updateGist()}
+                >
+                  Save
+                </Button>
+              ) : (
+                <Button
+                  className="float-right bg-secondary border-secondary"
+                  onClick={() => createGist()}
+                >
+                  Create
+                </Button>
+              ))}
+          </Col>
+        </Row>
         <Row className="justify-content-center">
           <Col xs={11} md={9} lg={7}>
             {content && (
               <Card className="shadow">
-                <Card.Header className="snip-header">
-                  <>
-                    {isEdit && !content.id ? (
-                      <InputGroup>
-                        <FormControl
-                          placeholder="Title"
-                          aria-label="Title"
-                          aria-describedby="basic-addon2"
-                          onChange={(e) =>
-                            setContent({
-                              ...content,
-                              title: e.currentTarget.value,
-                            })
-                          }
-                          value={content.title}
-                        />
-                        <InputGroup.Append>
-                          <InputGroup.Text id="basic-addon2">
-                            .sd.md
-                          </InputGroup.Text>
-                        </InputGroup.Append>
-                      </InputGroup>
-                    ) : (
-                      <Card.Title>
-                        {camelToWords(removeExtension(content.title))}
-                      </Card.Title>
-                    )}
-                    <Button onClick={() => setIsEdit(!isEdit)}>
-                      {isEdit ? "Preview" : "Edit"}
-                    </Button>
-                    {isEdit &&
-                      (content.id ? (
-                        <Button onClick={() => updateGist()}>Save</Button>
-                      ) : (
-                        <Button onClick={() => createGist()}>Create</Button>
-                      ))}
-                  </>
-                </Card.Header>
                 <Card.Body>
                   {isEdit ? (
                     <Editor
