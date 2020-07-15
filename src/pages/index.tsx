@@ -1,5 +1,3 @@
-import { useEffect } from "react"
-import Router from "next/router"
 import SnipDown from "./[id]"
 import { GetServerSideProps } from "next"
 

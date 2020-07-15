@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import Router from "next/router"
 import Layout from "../components/Layout"
@@ -34,7 +34,9 @@ import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
-import { PlusIcon } from "@primer/octicons-react"
+import htmlToImage from "html-to-image"
+//@ts-ignore
+import download from "downloadjs"
 
 interface DataProps {
   code?: string
@@ -56,6 +58,8 @@ const SnipDown = ({ code, snip }: DataProps) => {
   } as Snip)
   const [canEdit, setCanEdit] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
+  const [dataUrl, setDataUrl] = useState<string>()
+  const mdRef = useRef<any>(null)
 
   useEffect(() => {
     if (code && hasToken === "false") {
@@ -224,6 +228,30 @@ const SnipDown = ({ code, snip }: DataProps) => {
     localStorage.removeItem("auth_token")
   }
 
+  const handlePng = () => {
+    if (mdRef && content.title) {
+      htmlToImage.toPng(mdRef.current).then((link) => {
+        download(link, `${content.title}.png`)
+      })
+    }
+  }
+
+  const handleJpeg = () => {
+    if (mdRef && content.title) {
+      htmlToImage.toJpeg(mdRef.current).then((link) => {
+        download(link, `${content.title}.jpeg`)
+      })
+    }
+  }
+
+  const handleSvg = () => {
+    if (mdRef && content.title) {
+      htmlToImage.toSvgDataURL(mdRef.current).then((link) => {
+        download(link, `${content.title}.svg`)
+      })
+    }
+  }
+
   return (
     <Layout
       title={snip ? snip.title : undefined}
@@ -324,12 +352,20 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   Create
                 </Button>
               ))}
+
+            {!isEdit && (
+              <>
+                <Button onClick={() => handlePng()}>PNG</Button>
+                <Button onClick={() => handleJpeg()}>JPEG</Button>
+                <Button onClick={() => handleSvg()}>SVG</Button>
+              </>
+            )}
           </Col>
         </Row>
         <Row className="justify-content-center">
           <Col xs={11} md={9} lg={7}>
             {content && (
-              <Card className="shadow">
+              <Card className="shadow" ref={mdRef}>
                 <Card.Body>
                   {isEdit ? (
                     <Editor
