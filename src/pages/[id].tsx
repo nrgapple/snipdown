@@ -362,13 +362,15 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   </Card.Title>
                 )}
                 {allowEdit() && (
-                  <Button
-                    className="float-left bg-primary border-primary"
-                    onClick={() => setIsEdit(!isEdit)}
-                    disabled={!content.title || !content.content}
-                  >
-                    {isEdit ? "Preview" : "Edit"}
-                  </Button>
+                  <ButtonGroup className="pr-2">
+                    <Button
+                      className="float-left bg-primary border-primary"
+                      onClick={() => setIsEdit(!isEdit)}
+                      disabled={!content.title || !content.content}
+                    >
+                      {isEdit ? "Preview" : "Edit"}
+                    </Button>
+                  </ButtonGroup>
                 )}
                 {isEdit &&
                   (content.id ? (
@@ -402,7 +404,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
                 {!isEdit && (
                   <>
-                    <Dropdown as={ButtonGroup} className="pl-2">
+                    <Dropdown as={ButtonGroup}>
                       <Button onClick={() => handlePng()} variant="success">
                         Export
                       </Button>
