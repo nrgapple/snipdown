@@ -29,6 +29,8 @@ import {
   FormControl,
   NavLink,
   NavItem,
+  SplitButton,
+  ButtonGroup,
 } from "react-bootstrap"
 import { Container } from "next/app"
 import Editor from "../components/Editor"
@@ -37,6 +39,7 @@ import CodeBlock from "../components/CodeBlock"
 import htmlToImage from "html-to-image"
 //@ts-ignore
 import download from "downloadjs"
+import DropdownItem from "react-bootstrap/esm/DropdownItem"
 
 interface DataProps {
   code?: string
@@ -386,9 +389,28 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
             {!isEdit && (
               <>
-                <Button onClick={() => handlePng()}>PNG</Button>
-                <Button onClick={() => handleJpeg()}>JPEG</Button>
-                <Button onClick={() => handleSvg()}>SVG</Button>
+                <Dropdown as={ButtonGroup} className="pl-2">
+                  <Button onClick={() => handlePng()} variant="success">
+                    Export
+                  </Button>
+
+                  <Dropdown.Toggle
+                    split
+                    variant="success"
+                    id="dropdown-split-basic"
+                  />
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handlePng()}>
+                      PNG
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handlePng()}>
+                      JPEG
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handlePng()}>
+                      SVG
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </>
             )}
           </Col>
