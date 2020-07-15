@@ -239,11 +239,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
           {snips && (
             <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
               {snips.map((x, i) => (
-                <Dropdown.Item key={i}>
-                  <Link href="/[id]" as={`/${x.id}`}>
+                <Link href="/[id]" as={`/${x.id}`} key={i} passHref>
+                  <NavDropdown.Item key={i}>
                     {camelToWords(removeExtension(x.title))}
-                  </Link>
-                </Dropdown.Item>
+                  </NavDropdown.Item>
+                </Link>
               ))}
             </NavDropdown>
           )}
@@ -280,7 +280,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         <Row className="justify-content-center pb-4">
           <Col xs={11} md={9} lg={7} className="">
             {isEdit && !content.id ? (
-              <InputGroup>
+              <InputGroup className="pb-2">
                 <FormControl
                   placeholder="Title"
                   aria-label="Title"
@@ -298,12 +298,12 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 </InputGroup.Append>
               </InputGroup>
             ) : (
-              <Card.Title>
+              <Card.Title className="pb-2">
                 {camelToWords(removeExtension(content.title))}
               </Card.Title>
             )}
             <Button
-              className="float-left bg-primary border-secondary"
+              className="float-left bg-primary border-primary"
               onClick={() => setIsEdit(!isEdit)}
             >
               {isEdit ? "Preview" : "Edit"}
