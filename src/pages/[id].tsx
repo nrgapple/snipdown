@@ -59,6 +59,7 @@ Something related.
 `
 
 const SnipDown = ({ code, snip }: DataProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [token, setToken] = useState("")
   const [hasToken, setHasToken] = useState<hasTokenType>("waiting")
@@ -103,13 +104,17 @@ const SnipDown = ({ code, snip }: DataProps) => {
   }, [code, hasToken])
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_token") ?? ""
-    if (token) {
-      setToken(token)
-      setIsLoggedIn(true)
-      setHasToken("true")
-    } else {
-      setHasToken("false")
+    try {
+      const token = localStorage.getItem("auth_token") ?? ""
+      if (token) {
+        setToken(token)
+        setIsLoggedIn(true)
+        setHasToken("true")
+      } else {
+        setHasToken("false")
+      }
+    } finally {
+      setIsLoading(false)
     }
   }, [])
 
@@ -299,7 +304,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
           </Link>
         </Nav>
         <Nav>
-          {allowEdit() ? (
+          {isLoggedIn ? (
             user && (
               <Dropdown id="collasible-nav-dropdown" alignRight>
                 <Dropdown.Toggle variant="clear">
@@ -327,122 +332,132 @@ const SnipDown = ({ code, snip }: DataProps) => {
         </Nav>
       </Navbar>
       <Container fluid>
-        <Row className="justify-content-center pb-4">
-          <Col xs={11} md={9} lg={7} className="">
-            {isEdit && !content.id ? (
-              <InputGroup className="pb-2">
-                <FormControl
-                  placeholder="Title"
-                  aria-label="Title"
-                  aria-describedby="basic-addon2"
-                  onChange={(e) =>
-                    setContent({
-                      ...content,
-                      title: e.currentTarget.value,
-                    })
-                  }
-                  value={content.title}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text id="basic-addon2">.sd.md</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-            ) : (
-              <Card.Title className="pb-2">
-                {camelToWords(removeExtension(content.title))}
-              </Card.Title>
-            )}
-            {allowEdit() && (
-              <Button
-                className="float-left bg-primary border-primary"
-                onClick={() => setIsEdit(!isEdit)}
-                disabled={!content.title || !content.content}
-              >
-                {isEdit ? "Preview" : "Edit"}
-              </Button>
-            )}
-            {isEdit &&
-              (content.id ? (
-                <Button
-                  className="float-right bg-secondary border-secondary"
-                  onClick={() => updateGist()}
-                >
-                  Save
-                </Button>
-              ) : (
-                <Button
-                  className={`float-right ${
-                    !(content.content && content.title && isLoggedIn)
-                      ? "bg-transparent text-secondary border-secondary"
-                      : "btn-secondary"
-                  }`}
-                  onClick={() => createGist()}
-                  disabled={!content.content || !content.title || !isLoggedIn}
-                >
-                  {isLoggedIn
-                    ? !content.title
-                      ? "Add a Title"
-                      : !content.content
-                      ? "Add some Content"
-                      : "Create"
-                    : "Login to Create"}
-                </Button>
-              ))}
-
-            {!isEdit && (
-              <>
-                <Dropdown as={ButtonGroup} className="pl-2">
-                  <Button onClick={() => handlePng()} variant="success">
-                    Export
-                  </Button>
-
-                  <Dropdown.Toggle
-                    split
-                    variant="success"
-                    id="dropdown-split-basic"
-                  />
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => handlePng()}>
-                      PNG
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleJpeg()}>
-                      JPEG
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSvg()}>
-                      SVG
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </>
-            )}
-          </Col>
-        </Row>
-        <Row className="justify-content-center">
-          <Col xs={11} md={9} lg={7}>
-            {content && (
-              <Card className="shadow" ref={mdRef}>
-                <Card.Body>
-                  {isEdit && isLoggedIn ? (
-                    <Editor
-                      style={{ minHeight: "60vh" }}
-                      language="markdown"
-                      value={content.content}
-                      onChange={(value) =>
-                        setContent({ ...content, content: value })
+        {!isLoading ? (
+          <>
+            <Row className="justify-content-center pb-4">
+              <Col xs={11} md={9} lg={7} className="">
+                {isEdit && !content.id ? (
+                  <InputGroup className="pb-2">
+                    <FormControl
+                      placeholder="Title"
+                      aria-label="Title"
+                      aria-describedby="basic-addon2"
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          title: e.currentTarget.value,
+                        })
                       }
-                      placeholder={defaultText}
+                      value={content.title}
                     />
+                    <InputGroup.Append>
+                      <InputGroup.Text id="basic-addon2">
+                        .sd.md
+                      </InputGroup.Text>
+                    </InputGroup.Append>
+                  </InputGroup>
+                ) : (
+                  <Card.Title className="pb-2">
+                    {camelToWords(removeExtension(content.title))}
+                  </Card.Title>
+                )}
+                {allowEdit() && (
+                  <Button
+                    className="float-left bg-primary border-primary"
+                    onClick={() => setIsEdit(!isEdit)}
+                    disabled={!content.title || !content.content}
+                  >
+                    {isEdit ? "Preview" : "Edit"}
+                  </Button>
+                )}
+                {isEdit &&
+                  (content.id ? (
+                    <Button
+                      className="float-right bg-secondary border-secondary"
+                      onClick={() => updateGist()}
+                    >
+                      Save
+                    </Button>
                   ) : (
-                    <ReactMarkdown
-                      source={content.content}
-                      renderers={{ code: CodeBlock }}
-                    />
-                  )}
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-        </Row>
+                    <Button
+                      className={`float-right ${
+                        !(content.content && content.title && isLoggedIn)
+                          ? "bg-transparent text-secondary border-secondary"
+                          : "btn-secondary"
+                      }`}
+                      onClick={() => createGist()}
+                      disabled={
+                        !content.content || !content.title || !isLoggedIn
+                      }
+                    >
+                      {isLoggedIn
+                        ? !content.title
+                          ? "Add a Title"
+                          : !content.content
+                          ? "Add some Content"
+                          : "Create"
+                        : "Login to Create"}
+                    </Button>
+                  ))}
+
+                {!isEdit && (
+                  <>
+                    <Dropdown as={ButtonGroup} className="pl-2">
+                      <Button onClick={() => handlePng()} variant="success">
+                        Export
+                      </Button>
+
+                      <Dropdown.Toggle
+                        split
+                        variant="success"
+                        id="dropdown-split-basic"
+                      />
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => handlePng()}>
+                          PNG
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleJpeg()}>
+                          JPEG
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleSvg()}>
+                          SVG
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </>
+                )}
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col xs={11} md={9} lg={7}>
+                {content && (
+                  <Card className="shadow" ref={mdRef}>
+                    <Card.Body>
+                      {isEdit && isLoggedIn ? (
+                        <Editor
+                          style={{ minHeight: "60vh" }}
+                          language="markdown"
+                          value={content.content}
+                          onChange={(value) =>
+                            setContent({ ...content, content: value })
+                          }
+                          placeholder={defaultText}
+                        />
+                      ) : (
+                        <ReactMarkdown
+                          source={content.content}
+                          renderers={{ code: CodeBlock }}
+                        />
+                      )}
+                    </Card.Body>
+                  </Card>
+                )}
+              </Col>
+            </Row>
+          </>
+        ) : (
+          <div />
+        )}
       </Container>
     </Layout>
   )
