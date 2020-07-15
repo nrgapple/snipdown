@@ -254,7 +254,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         <Nav>
           {isLoggedIn ? (
             user && (
-              <Dropdown id="collasible-nav-dropdown">
+              <Dropdown id="collasible-nav-dropdown" alignRight>
                 <Dropdown.Toggle variant="clear">
                   <img
                     width="30px"
