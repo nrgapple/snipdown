@@ -45,6 +45,26 @@ interface DataProps {
 
 type hasTokenType = "waiting" | "false" | "true"
 
+const defaultText = `# Add a title
+
+1. Give
+2. Some
+3. Steps
+
+[link-it](https://google.com)
+
+![image-it](https://image.url)
+
+## Talk about something related
+
+Something related.
+
+|Table| It|
+|-----|---|
+|123  | 09|
+|456  | 87|
+`
+
 const SnipDown = ({ code, snip }: DataProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [token, setToken] = useState("")
@@ -116,6 +136,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
   useEffect(() => {
     if (snip) {
+      setIsEdit(false)
       setContent(snip)
     }
   }, [snip])
@@ -267,11 +288,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
           {snips && (
             <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
               {snips.map((x, i) => (
-                <Dropdown.Item key={i}>
-                  <Link href="/[id]" as={`/${x.id}`}>
+                <Link href="/[id]" as={`/${x.id}`} key={i} passHref>
+                  <NavDropdown.Item key={i}>
                     {camelToWords(removeExtension(x.title))}
-                  </Link>
-                </Dropdown.Item>
+                  </NavDropdown.Item>
+                </Link>
               ))}
             </NavDropdown>
           )}
@@ -282,7 +303,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         <Nav>
           {isLoggedIn ? (
             user && (
-              <Dropdown id="collasible-nav-dropdown">
+              <Dropdown id="collasible-nav-dropdown" alignRight>
                 <Dropdown.Toggle variant="clear">
                   <img
                     width="30px"
@@ -308,7 +329,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         <Row className="justify-content-center pb-4">
           <Col xs={11} md={9} lg={7} className="">
             {isEdit && !content.id ? (
-              <InputGroup>
+              <InputGroup className="pb-2">
                 <FormControl
                   placeholder="Title"
                   aria-label="Title"
@@ -326,12 +347,12 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 </InputGroup.Append>
               </InputGroup>
             ) : (
-              <Card.Title>
+              <Card.Title className="pb-2">
                 {camelToWords(removeExtension(content.title))}
               </Card.Title>
             )}
             <Button
-              className="float-left bg-primary border-secondary"
+              className="float-left bg-primary border-primary"
               onClick={() => setIsEdit(!isEdit)}
             >
               {isEdit ? "Preview" : "Edit"}
@@ -346,10 +367,19 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 </Button>
               ) : (
                 <Button
-                  className="float-right bg-secondary border-secondary"
+                  className={`float-right ${
+                    !(content.content && content.title)
+                      ? "bg-transparent text-secondary border-secondary"
+                      : "btn-secondary"
+                  }`}
                   onClick={() => createGist()}
+                  disabled={!content.content || !content.title}
                 >
-                  Create
+                  {!content.title
+                    ? "Add a Title"
+                    : !content.content
+                    ? "Add some Content"
+                    : "Create"}
                 </Button>
               ))}
 
@@ -369,11 +399,13 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 <Card.Body>
                   {isEdit ? (
                     <Editor
+                      style={{ minHeight: "60vh" }}
                       language="markdown"
                       value={content.content}
                       onChange={(value) =>
                         setContent({ ...content, content: value })
                       }
+                      placeholder={defaultText}
                     />
                   ) : (
                     <ReactMarkdown
