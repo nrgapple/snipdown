@@ -232,7 +232,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
           : undefined
       }
     >
-      <Navbar bg="dark" variant="dark">
+      <Navbar>
         <Navbar.Brand>SnipDown</Navbar.Brand>
         <Nav className="mr-auto">
           {snips && (
@@ -269,11 +269,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
         </Nav>
       </Navbar>
       <Container fluid>
-        <Row>
-          <Col>
+        <Row className="justify-content-center">
+          <Col xs={11} md={9} lg={7}>
             {content && (
-              <Card style={{ margin: "32px" }}>
-                <Card.Header>
+              <Card className="shadow">
+                <Card.Header className="snip-header">
                   <>
                     {isEdit && !content.id ? (
                       <InputGroup>
