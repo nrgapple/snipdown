@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import Link from "next/link"
+import Router from "next/router"
 import Layout from "../components/Layout"
 import { InferGetServerSidePropsType, GetServerSideProps } from "next"
 import {
@@ -7,7 +9,7 @@ import {
   camelToWords,
   removeExtension,
 } from "../util"
-import { Snip, GithubUser, GistData } from "../util/types"
+import { Snip, GithubUser, GistData, FileData } from "../util/types"
 import { Uris, Routes } from "../util/links"
 import { Octokit } from "@octokit/core"
 import { Language } from "prism-react-renderer"
@@ -23,12 +25,15 @@ import {
   Tab,
   Button,
   CardGroup,
+  InputGroup,
+  FormControl,
 } from "react-bootstrap"
 import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
 import dynamic from "next/dynamic"
+import context from "react-bootstrap/esm/AccordionContext"
 
 interface DataProps {
   code?: string
@@ -43,7 +48,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const [hasToken, setHasToken] = useState<hasTokenType>("waiting")
   const [user, setUser] = useState<GithubUser>()
   const [snips, setSnips] = useState<Snip[]>()
-  const [content, setContent] = useState<Snip>()
+  const [content, setContent] = useState<Snip>({
+    title: "",
+    content: "",
+    id: "",
+  } as Snip)
   const [canEdit, setCanEdit] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
 
@@ -95,7 +104,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   }, [token])
 
   useEffect(() => {
-    if (user) {
+    if (user && !snips) {
       getGists()
     }
   }, [user])
@@ -138,6 +147,59 @@ const SnipDown = ({ code, snip }: DataProps) => {
     )
   }
 
+  const updateGist = async () => {
+    if (!content || !user) return
+    const octokit = new Octokit({
+      auth: token,
+    })
+
+    const file: FileData = {
+      filename: content.title,
+      language: "markdown",
+      content: content.content,
+    }
+
+    try {
+      const resp = await octokit.request(`PATCH /gists/${content.id}`, {
+        gist_id: content.id,
+        files: { [content.title]: file },
+        description: "update",
+      })
+      if (resp.status === 200) {
+        console.log("Howdy, It Worked!")
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const createGist = async () => {
+    if (!content || !user) return
+    const octokit = new Octokit({
+      auth: token,
+    })
+
+    const file: FileData = {
+      filename: `${content.title.replace(/ /g, "")}.sd.md`,
+      language: "markdown",
+      content: content.content,
+    }
+
+    try {
+      const resp = await octokit.request(`POST /gists`, {
+        files: { [content.title]: file },
+      })
+      if (resp.status === 200) {
+        console.log("Howdy, It Worked!")
+      }
+
+      const { id } = resp.data
+      Router.push("/[id]", `/${id}`)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   const getGist = async (id: string) => {
     const octokit = new Octokit({
       auth: token,
@@ -150,7 +212,6 @@ const SnipDown = ({ code, snip }: DataProps) => {
       id: id,
       title: file.filename,
       content: file.content,
-      language: file.language.toLowerCase() as Language,
     })
   }
 
@@ -177,8 +238,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
           {snips && (
             <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
               {snips.map((x, i) => (
-                <Dropdown.Item onClick={() => getGist(x.id)} key={i}>
-                  {camelToWords(removeExtension(x.title))}
+                <Dropdown.Item key={i}>
+                  <Link href="/[id]" as={`/${x.id}`}>
+                    {camelToWords(removeExtension(x.title))}
+                  </Link>
                 </Dropdown.Item>
               ))}
             </NavDropdown>
@@ -198,7 +261,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
             )
           ) : (
             <Nav.Link
-              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code`}
+              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code&scope=gist`}
             >
               Login with Github
             </Nav.Link>
@@ -209,19 +272,49 @@ const SnipDown = ({ code, snip }: DataProps) => {
         <Row>
           <Col>
             {content && (
-              <Card style={{ margin: "8px" }}>
+              <Card style={{ margin: "32px" }}>
                 <Card.Header>
-                  <Card.Title>
-                    {camelToWords(removeExtension(content.title))}
-                  </Card.Title>
-                  <Button onClick={() => setIsEdit(!isEdit)}>
-                    {isEdit ? "Preview" : "Edit"}
-                  </Button>
+                  <>
+                    {isEdit && !content.id ? (
+                      <InputGroup>
+                        <FormControl
+                          placeholder="Title"
+                          aria-label="Title"
+                          aria-describedby="basic-addon2"
+                          onChange={(e) =>
+                            setContent({
+                              ...content,
+                              title: e.currentTarget.value,
+                            })
+                          }
+                          value={content.title}
+                        />
+                        <InputGroup.Append>
+                          <InputGroup.Text id="basic-addon2">
+                            .sd.md
+                          </InputGroup.Text>
+                        </InputGroup.Append>
+                      </InputGroup>
+                    ) : (
+                      <Card.Title>
+                        {camelToWords(removeExtension(content.title))}
+                      </Card.Title>
+                    )}
+                    <Button onClick={() => setIsEdit(!isEdit)}>
+                      {isEdit ? "Preview" : "Edit"}
+                    </Button>
+                    {isEdit &&
+                      (content.id ? (
+                        <Button onClick={() => updateGist()}>Save</Button>
+                      ) : (
+                        <Button onClick={() => createGist()}>Create</Button>
+                      ))}
+                  </>
                 </Card.Header>
                 <Card.Body>
                   {isEdit ? (
                     <Editor
-                      language={content.language}
+                      language="markdown"
                       value={content.content}
                       onChange={(value) =>
                         setContent({ ...content, content: value })

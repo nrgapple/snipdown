@@ -9,7 +9,6 @@ export interface Snip {
   title: string
   content: string
   id: string
-  language: Language
 }
 
 export interface FileData {
