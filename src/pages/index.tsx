@@ -13,7 +13,6 @@ export const getServerSideProps: GetServerSideProps<DataProps> = async (
   context
 ) => {
   if (context.query.code) {
-    console.log(context.query.code)
     return {
       props: {
         code: context.query.code,

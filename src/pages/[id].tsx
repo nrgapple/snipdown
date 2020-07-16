@@ -28,10 +28,11 @@ import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
-import htmlToImage from "html-to-image"
+import htmlToImage from "dom-to-image"
 //@ts-ignore
 import download from "downloadjs"
 import { MarkGithubIcon } from "@primer/octicons-react"
+import PreImg from "../components/PreImg"
 
 interface DataProps {
   code?: string
@@ -254,26 +255,65 @@ const SnipDown = ({ code, snip }: DataProps) => {
   }
 
   const handlePng = () => {
-    if (mdRef && content.title) {
-      htmlToImage.toPng(mdRef.current).then((link) => {
-        download(link, `${content.title.split(".")[0]}.png`)
-      })
+    if (mdRef) {
+      htmlToImage
+        .toPng(mdRef.current, {
+          cacheBust: true,
+          imagePlaceholder:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h79y4ABTICmGnXPbMAAAAASUVORK5CYII=",
+        })
+        .then((link) => {
+          download(
+            link,
+            `${
+              content.title
+                ? content.title.split(".")[0]
+                : `snipdow-${new Date().toTimeString()}`
+            }.png`
+          )
+        })
     }
   }
 
   const handleJpeg = () => {
-    if (mdRef && content.title) {
-      htmlToImage.toJpeg(mdRef.current).then((link) => {
-        download(link, `${content.title.split(".")[0]}.jpeg`)
-      })
+    if (mdRef) {
+      htmlToImage
+        .toJpeg(mdRef.current, {
+          cacheBust: true,
+          imagePlaceholder:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h79y4ABTICmGnXPbMAAAAASUVORK5CYII=",
+        })
+        .then((link) => {
+          download(
+            link,
+            `${
+              content.title
+                ? content.title.split(".")[0]
+                : `snipdow-${new Date().toTimeString()}`
+            }.jpeg`
+          )
+        })
     }
   }
 
   const handleSvg = () => {
-    if (mdRef && content.title) {
-      htmlToImage.toSvgDataURL(mdRef.current).then((link) => {
-        download(link, `${content.title.split(".")[0]}.svg`)
-      })
+    if (mdRef) {
+      htmlToImage
+        .toSvg(mdRef.current, {
+          cacheBust: true,
+          imagePlaceholder:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h79y4ABTICmGnXPbMAAAAASUVORK5CYII=",
+        })
+        .then((link) => {
+          download(
+            link,
+            `${
+              content.title
+                ? content.title.split(".")[0]
+                : `snipdow-${new Date().toTimeString()}`
+            }.svg`
+          )
+        })
     }
   }
 
@@ -367,7 +407,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                     <Button
                       className="float-left bg-transparent text-primary line-bottom"
                       onClick={() => setIsEdit(!isEdit)}
-                      disabled={!content.title || !content.content}
+                      disabled={!content.content}
                     >
                       {isEdit ? "Preview" : "Edit"}
                     </Button>
@@ -475,7 +515,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
                       ) : (
                         <ReactMarkdown
                           source={content.content}
-                          renderers={{ code: CodeBlock }}
+                          renderers={{
+                            code: CodeBlock,
+                            image: PreImg,
+                          }}
                         />
                       )}
                     </Card.Body>
