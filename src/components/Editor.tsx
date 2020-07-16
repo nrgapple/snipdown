@@ -58,7 +58,7 @@ const Editor = ({
             <div {...getLineProps({ line, key: i })}>
               {line.map((token, key) => {
                 if (
-                  !line.every((x) => x.content !== "") &&
+                  line.every((x) => x.content === "") &&
                   token.types.includes("code")
                 ) {
                   token.empty = true
