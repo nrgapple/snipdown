@@ -40,30 +40,23 @@ interface DataProps {
 
 type hasTokenType = "waiting" | "false" | "true"
 
-const defaultText = `# Add a title
+const defaultText = `# 📝 SnipDown ⬇️
 
-1. Give
-2. Some
-3. Steps
+Explain something and share it in a beatiful, linkable format.
 
-[link-it](https://google.com)
+1. Login to Github
+2. Explain something
+3. Save to gists
+4. Export PNG
+5. Tweet
 
-## Talk about something related
+[link-it](https://snipdown.vercel.app)
 
-Something related.
+![image-it](https://image.url)
 
-### Oh, a code snippet?
+## Share Snips
 
-\`\`\`js
-
-console.log("Thats cool")
-
-\`\`\`
-
-|Table| It|
-|-----|---|
-|123  | 09|
-|456  | 87|
+You can make a snip, save it and share the url for a beatiful way to explain things to others in markdown. Everything is saved to your github gists.
 `
 
 const SnipDown = ({ code, snip }: DataProps) => {
