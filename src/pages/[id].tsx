@@ -294,10 +294,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   }
 
   const allowEdit = () => {
-    return (
-      isLoggedIn &&
-      (!snip || !snip.id || (snips && snips?.find((x) => x.id === snip.id)))
-    )
+    return !snip || !snip.id || (snips && snips?.find((x) => x.id === snip.id))
   }
 
   return (
@@ -361,8 +358,8 @@ const SnipDown = ({ code, snip }: DataProps) => {
               }}
               href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code&scope=gist`}
             >
-              Login with GitHub
-              <MarkGithubIcon className="pl-1" size="small" />
+              Login with
+              <MarkGithubIcon className="github-logo pl-1" size="small" />
             </Nav.Link>
           )}
         </Nav>
@@ -418,7 +415,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                           <Spinner animation="grow" />
                         )
                       ) : (
-                        "Login to Create"
+                        "Login to Save"
                       )}
                     </Button>
                   ))}
