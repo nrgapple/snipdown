@@ -1,6 +1,6 @@
 const Branding = {
   defaultTitle: "📝SnipDown⬇️",
-  defaultLogo: "",
+  defaultLogo: "/logo.png",
   defaultDesciption: "Snippets of Ideas",
 }
 

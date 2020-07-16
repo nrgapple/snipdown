@@ -286,7 +286,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
   return (
     <Layout
-      title={snip ? snip.title : undefined}
+      title={snip ? camelToWords(removeExtension(snip.title)) : undefined}
       url={
         snip
           ? `${process.env.NEXT_PUBLIC_BASE_URI}${Routes.SNIP}/${snip.id}`
