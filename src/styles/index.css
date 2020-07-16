@@ -52,3 +52,9 @@ button {
 .token {
   background: none !important;
 }
+
+.github-logo {
+  height: 22px;
+  width: 22px;
+  margin-left: 5px;
+}
