@@ -1,7 +1,7 @@
 const Branding = {
-  defaultTitle: "SnipDown",
+  defaultTitle: "📝SnipDown⬇️",
   defaultLogo: "",
-  defaultDesciption: "Snippets of Markdown Ideas",
+  defaultDesciption: "Snippets of Ideas",
 }
 
 export default Branding
