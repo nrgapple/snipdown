@@ -11,15 +11,6 @@ import SimpleEditor from "react-simple-code-editor"
 import Highlight, { defaultProps, Language } from "prism-react-renderer"
 import theme from "prism-react-renderer/themes/duotoneLight"
 
-// const exampleCode = `
-// (function someDemo() {
-//   var test = "Hello World!";
-//   console.log(test);
-// })();
-
-// return () => <App />;
-// `
-
 const styles = {
   root: {
     boxSizing: "border-box",
@@ -51,9 +42,8 @@ const Editor = ({
 
   const highlight = (code: string) => (
     <Highlight {...defaultProps} theme={theme} code={code} language={language}>
-      {({ className, style, tokens, getLineProps, getTokenProps }) => (
+      {({ className, tokens, getLineProps, getTokenProps }) => (
         <Fragment>
-          {console.log(tokens)}
           {tokens.map((line, i) => (
             <div {...getLineProps({ line, key: i })}>
               {line.map((token, key) => {

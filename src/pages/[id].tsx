@@ -28,10 +28,11 @@ import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
-import htmlToImage from "html-to-image"
+const html2canvas = process.browser ? require("html2canvas") : null
 //@ts-ignore
 import download from "downloadjs"
 import { MarkGithubIcon } from "@primer/octicons-react"
+import PreImg from "../components/PreImg"
 
 interface DataProps {
   code?: string
@@ -254,25 +255,37 @@ const SnipDown = ({ code, snip }: DataProps) => {
   }
 
   const handlePng = () => {
-    if (mdRef && content.title) {
-      htmlToImage.toPng(mdRef.current).then((link) => {
-        download(link, `${content.title.split(".")[0]}.png`)
+    if (mdRef) {
+      html2canvas(mdRef.current, {
+        proxy: `${process.env.NEXT_PUBLIC_CORS_POXY_IMAGE}`,
+      }).then((canvas: any) => {
+        const link = canvas.toDataURL("image/png")
+        download(
+          link,
+          `${
+            content.title
+              ? content.title.split(".")[0]
+              : `snipdow-${new Date().toTimeString()}`
+          }.png`
+        )
       })
     }
   }
 
   const handleJpeg = () => {
-    if (mdRef && content.title) {
-      htmlToImage.toJpeg(mdRef.current).then((link) => {
-        download(link, `${content.title.split(".")[0]}.jpeg`)
-      })
-    }
-  }
-
-  const handleSvg = () => {
-    if (mdRef && content.title) {
-      htmlToImage.toSvgDataURL(mdRef.current).then((link) => {
-        download(link, `${content.title.split(".")[0]}.svg`)
+    if (mdRef) {
+      html2canvas(mdRef.current, {
+        proxy: `${process.env.NEXT_PUBLIC_CORS_POXY_IMAGE}`,
+      }).then((canvas: any) => {
+        const link = canvas.toDataURL("image/jpeg")
+        download(
+          link,
+          `${
+            content.title
+              ? content.title.split(".")[0]
+              : `snipdow-${new Date().toTimeString()}`
+          }.jpeg`
+        )
       })
     }
   }
@@ -296,10 +309,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
       <Navbar>
         <Navbar.Brand>
           <img
-            style={{ margin: "12px" }}
+            style={{ marginRight: "4px" }}
             src="logo.png"
-            height="30px"
-            width="30px"
+            height="25px"
+            width="25px"
           />
           SnipDown
         </Navbar.Brand>
@@ -367,7 +380,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                     <Button
                       className="float-left bg-transparent text-primary line-bottom"
                       onClick={() => setIsEdit(!isEdit)}
-                      disabled={!content.title || !content.content}
+                      disabled={!content.content}
                     >
                       {isEdit ? "Preview" : "Edit"}
                     </Button>
@@ -429,9 +442,6 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         <Dropdown.Item onClick={() => handleJpeg()}>
                           JPEG
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => handleSvg()}>
-                          SVG
-                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </>
@@ -475,7 +485,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
                       ) : (
                         <ReactMarkdown
                           source={content.content}
-                          renderers={{ code: CodeBlock }}
+                          renderers={{
+                            code: CodeBlock,
+                            image: PreImg,
+                          }}
                         />
                       )}
                     </Card.Body>
