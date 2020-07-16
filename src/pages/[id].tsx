@@ -28,7 +28,7 @@ import { Container } from "next/app"
 import Editor from "../components/Editor"
 import ReactMarkdown from "react-markdown"
 import CodeBlock from "../components/CodeBlock"
-import htmlToImage from "dom-to-image"
+const html2canvas = process.browser ? require("html2canvas") : null
 //@ts-ignore
 import download from "downloadjs"
 import { MarkGithubIcon } from "@primer/octicons-react"
@@ -256,64 +256,37 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
   const handlePng = () => {
     if (mdRef) {
-      htmlToImage
-        .toPng(mdRef.current, {
-          cacheBust: true,
-          imagePlaceholder:
-            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h79y4ABTICmGnXPbMAAAAASUVORK5CYII=",
-        })
-        .then((link) => {
-          download(
-            link,
-            `${
-              content.title
-                ? content.title.split(".")[0]
-                : `snipdow-${new Date().toTimeString()}`
-            }.png`
-          )
-        })
+      html2canvas(mdRef.current, {
+        proxy: `${process.env.NEXT_PUBLIC_CORS_POXY_IMAGE}`,
+      }).then((canvas: any) => {
+        const link = canvas.toDataURL("image/png")
+        download(
+          link,
+          `${
+            content.title
+              ? content.title.split(".")[0]
+              : `snipdow-${new Date().toTimeString()}`
+          }.png`
+        )
+      })
     }
   }
 
   const handleJpeg = () => {
     if (mdRef) {
-      htmlToImage
-        .toJpeg(mdRef.current, {
-          cacheBust: true,
-          imagePlaceholder:
-            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h79y4ABTICmGnXPbMAAAAASUVORK5CYII=",
-        })
-        .then((link) => {
-          download(
-            link,
-            `${
-              content.title
-                ? content.title.split(".")[0]
-                : `snipdow-${new Date().toTimeString()}`
-            }.jpeg`
-          )
-        })
-    }
-  }
-
-  const handleSvg = () => {
-    if (mdRef) {
-      htmlToImage
-        .toSvg(mdRef.current, {
-          cacheBust: true,
-          imagePlaceholder:
-            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h79y4ABTICmGnXPbMAAAAASUVORK5CYII=",
-        })
-        .then((link) => {
-          download(
-            link,
-            `${
-              content.title
-                ? content.title.split(".")[0]
-                : `snipdow-${new Date().toTimeString()}`
-            }.svg`
-          )
-        })
+      html2canvas(mdRef.current, {
+        proxy: `${process.env.NEXT_PUBLIC_CORS_POXY_IMAGE}`,
+      }).then((canvas: any) => {
+        const link = canvas.toDataURL("image/jpeg")
+        download(
+          link,
+          `${
+            content.title
+              ? content.title.split(".")[0]
+              : `snipdow-${new Date().toTimeString()}`
+          }.jpeg`
+        )
+      })
     }
   }
 
@@ -468,9 +441,6 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => handleJpeg()}>
                           JPEG
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => handleSvg()}>
-                          SVG
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

@@ -5,9 +5,7 @@ interface Props {
 }
 
 const PreImg = ({ src }: Props) => {
-  return (
-    <img id="pre-img" alt="preview-img" src={src} />
-  )
+  return <img alt="preview-img" src={src} />
 }
 
 export default PreImg
