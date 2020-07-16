@@ -43,3 +43,11 @@ button {
 .preclass span {
   font-weight: normal !important;
 }
+
+.code-block {
+  white-space: break-spaces !important;
+}
+
+.token {
+  background: none !important;
+}

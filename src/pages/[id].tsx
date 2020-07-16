@@ -309,10 +309,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
       <Navbar>
         <Navbar.Brand>
           <img
-            style={{ margin: "12px" }}
+            style={{ marginRight: "4px" }}
             src="logo.png"
-            height="30px"
-            width="30px"
+            height="25px"
+            width="25px"
           />
           SnipDown
         </Navbar.Brand>
