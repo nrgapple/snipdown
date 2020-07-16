@@ -57,10 +57,7 @@ const Editor = ({
           {tokens.map((line, i) => (
             <div {...getLineProps({ line, key: i })}>
               {line.map((token, key) => {
-                if (
-                  line.every((x) => x.content === "") &&
-                  token.types.includes("code")
-                ) {
+                if (line.every((x) => x.content === "")) {
                   token.empty = true
                 }
                 return <span {...getTokenProps({ token, key, className })} />
