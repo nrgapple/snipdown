@@ -48,11 +48,17 @@ const defaultText = `# Add a title
 
 [link-it](https://google.com)
 
-![image-it](https://image.url)
-
 ## Talk about something related
 
 Something related.
+
+### Oh, a code snippet?
+
+\`\`\`js
+
+console.log("Thats cool")
+
+\`\`\`
 
 |Table| It|
 |-----|---|
@@ -70,7 +76,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const [snips, setSnips] = useState<Snip[]>()
   const [content, setContent] = useState<Snip>({
     title: "",
-    content: "",
+    content: defaultText,
     id: "",
   } as Snip)
   const [isEdit, setIsEdit] = useState(true)
@@ -279,7 +285,15 @@ const SnipDown = ({ code, snip }: DataProps) => {
       }
     >
       <Navbar>
-        <Navbar.Brand>SnipDown</Navbar.Brand>
+        <Navbar.Brand>
+          <img
+            style={{ margin: "12px" }}
+            src="logo.png"
+            height="30px"
+            width="30px"
+          />
+          SnipDown
+        </Navbar.Brand>
         <Nav className="mr-auto">
           {snips && (
             <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
@@ -384,10 +398,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
                 {!isEdit && (
                   <>
-                    <Dropdown
-                      as={ButtonGroup}
-                      className="bg-transparent"
-                    >
+                    <Dropdown as={ButtonGroup} className="bg-transparent">
                       <Button
                         className="bg-transparent text-secondary line-bottom"
                         onClick={() => handlePng()}
@@ -451,7 +462,6 @@ const SnipDown = ({ code, snip }: DataProps) => {
                           onChange={(value) =>
                             setContent({ ...content, content: value })
                           }
-                          placeholder={defaultText}
                         />
                       ) : (
                         <ReactMarkdown

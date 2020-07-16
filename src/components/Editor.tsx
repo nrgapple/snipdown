@@ -53,11 +53,18 @@ const Editor = ({
     <Highlight {...defaultProps} theme={theme} code={code} language={language}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <Fragment>
+          {console.log(tokens)}
           {tokens.map((line, i) => (
             <div {...getLineProps({ line, key: i })}>
-              {line.map((token, key) => (
-                <span {...getTokenProps({ token, key })} />
-              ))}
+              {line.map((token, key) => {
+                if (
+                  !line.every((x) => x.content !== "") &&
+                  token.types.includes("code")
+                ) {
+                  token.empty = true
+                }
+                return <span {...getTokenProps({ token, key, className })} />
+              })}
             </div>
           ))}
         </Fragment>
@@ -75,6 +82,7 @@ const Editor = ({
       style={style}
       placeholder={placeholder}
       textareaClassName={textareaClassName}
+      preClassName="preclass"
     />
   )
 }

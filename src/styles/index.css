@@ -39,3 +39,7 @@ button {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
+
+.preclass span {
+  font-weight: normal !important;
+}
