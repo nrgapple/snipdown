@@ -1,0 +1,9 @@
+{
+  "short_name": "SnipDown",
+  "name": "SnipDown",
+  "icons": [],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#fff",
+  "background_color": "#000"
+}
