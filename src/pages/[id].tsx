@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, Fragment } from "react"
 import { useRouter } from "next/router"
 import Layout from "../components/Layout"
 import { GetServerSideProps } from "next"
@@ -23,6 +23,7 @@ import Branding from "../util/banding"
 import BottomToast from "../components/BottomToast"
 import SnipTitle from "../components/SnipTitle"
 import { handleDownload } from "../util/helpers"
+import SnipFooter from "../components/SnipFooter"
 
 interface DataProps {
   code?: string
@@ -232,59 +233,48 @@ const SnipDown = ({ code, snip }: DataProps) => {
         snips={snips}
         logout={logout}
       />
-      <Container fluid>
-        {!isInitLoading ? (
-          <>
+      {!isInitLoading && (
+        <Container fluid>
+          <Row className="justify-content-center pb-3">
+            <Col className="justify-content-sb" xs={11} md={9} lg={7}>
+              <SnipButtons
+                isEdit={isEdit}
+                isLoggedIn={isLoggedIn}
+                isLoadingGist={isLoadingGist}
+                toggleEdit={toggleEdit}
+                createGist={createGist}
+                updateGist={updateGist}
+                content={content}
+                allowEdit={allowEdit}
+                handleDownload={(ex: fileExt) =>
+                  handleDownload(ex, mdRef, content)
+                }
+              />
+            </Col>
+          </Row>
+          {isEdit && !content.id && (
             <Row className="justify-content-center pb-3">
-              <Col
-                xs={11}
-                md={9}
-                lg={7}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <SnipButtons
-                  isEdit={isEdit}
-                  isLoggedIn={isLoggedIn}
-                  isLoadingGist={isLoadingGist}
-                  toggleEdit={toggleEdit}
-                  createGist={createGist}
-                  updateGist={updateGist}
-                  content={content}
-                  allowEdit={allowEdit}
-                  handleDownload={(ex: fileExt) =>
-                    handleDownload(ex, mdRef, content)
-                  }
-                />
-              </Col>
-            </Row>
-            {isEdit && !content.id && (
-              <Row className="justify-content-center pb-3">
-                <Col xs={11} md={9} lg={7}>
-                  <SnipTitle content={content} setContent={setContent} />
-                </Col>
-              </Row>
-            )}
-            <Row className="justify-content-center pb-5">
               <Col xs={11} md={9} lg={7}>
-                {content && (
-                  <MDCard
-                    isEdit={isEdit}
-                    content={content}
-                    setContent={setContent}
-                    mdRef={mdRef}
-                  />
-                )}
+                <SnipTitle content={content} setContent={setContent} />
               </Col>
             </Row>
-          </>
-        ) : (
-          <div />
-        )}
-        <BottomToast show={show} message={message} setShow={setShow} />
-      </Container>
+          )}
+          <Row className="justify-content-center pb-5">
+            <Col xs={11} md={9} lg={7}>
+              {content && (
+                <MDCard
+                  isEdit={isEdit}
+                  content={content}
+                  setContent={setContent}
+                  mdRef={mdRef}
+                />
+              )}
+            </Col>
+          </Row>
+        </Container>
+      )}
+      <BottomToast show={show} message={message} setShow={setShow} />
+      <SnipFooter />
     </Layout>
   )
 }
