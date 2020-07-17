@@ -336,7 +336,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   <img
                     width="30px"
                     src={user.avatarUrl}
-                    className="rounded-circle"
+                    className="rounded-circle shadow"
                   />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -361,7 +361,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
       <Container fluid>
         {!isInitLoading ? (
           <>
-            <Row className="justify-content-center pb-2">
+            <Row className="justify-content-center pb-3">
               <Col
                 xs={11}
                 md={9}
@@ -374,7 +374,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 {allowEdit() && (
                   <ButtonGroup className="pr-2">
                     <Button
-                      className="float-left bg-transparent text-primary line-bottom"
+                      className="float-left tool-button inset-shadow round"
                       onClick={() => setIsEdit(!isEdit)}
                       disabled={!content.content}
                     >
@@ -385,14 +385,14 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 {isEdit &&
                   (content.id ? (
                     <Button
-                      className="float-right bg-transparent text-secondary line-bottom"
+                      className="float-right tool-button inset-shadow round"
                       onClick={() => updateGist()}
                     >
                       {!isLoadingGist ? "Save" : <Spinner animation="grow" />}
                     </Button>
                   ) : (
                     <Button
-                      className="float-right bg-transparent text-secondary line-bottom"
+                      className="float-right tool-button inset-shadow round"
                       onClick={() => createGist()}
                       disabled={
                         !content.content || !content.title || !isLoggedIn
@@ -418,7 +418,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   <>
                     <Dropdown as={ButtonGroup} className="bg-transparent">
                       <Button
-                        className="bg-transparent text-secondary line-bottom"
+                        className="tool-button inset-shadow round-left"
                         onClick={() => handlePng()}
                         variant="success"
                       >
@@ -429,7 +429,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         split
                         variant="success"
                         id="dropdown-split-basic"
-                        className="bg-transparent text-secondary line-bottom"
+                        className="tool-button inset-shadow round-right"
                       />
                       <Dropdown.Menu>
                         <Dropdown.Item onClick={() => handlePng()}>
@@ -459,6 +459,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         })
                       }
                       value={content.title}
+                      className="round title-input inset-shadow input-shadow"
                     />
                   </InputGroup>
                 </Col>
@@ -467,7 +468,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
             <Row className="justify-content-center pb-5">
               <Col xs={11} md={9} lg={7}>
                 {content && (
-                  <Card className="shadow" ref={mdRef}>
+                  <Card
+                    className="shadow round for-border for-color"
+                    ref={mdRef}
+                  >
                     <Card.Body>
                       {isEdit ? (
                         <Editor
