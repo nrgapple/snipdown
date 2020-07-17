@@ -336,7 +336,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   <img
                     width="30px"
                     src={user.avatarUrl}
-                    className="rounded-circle"
+                    className="rounded-circle shadow"
                   />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
@@ -361,7 +361,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
       <Container fluid>
         {!isInitLoading ? (
           <>
-            <Row className="justify-content-center pb-2">
+            <Row className="justify-content-center pb-3">
               <Col
                 xs={11}
                 md={9}
@@ -459,6 +459,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         })
                       }
                       value={content.title}
+                      className="round"
                     />
                   </InputGroup>
                 </Col>
@@ -467,7 +468,10 @@ const SnipDown = ({ code, snip }: DataProps) => {
             <Row className="justify-content-center">
               <Col xs={11} md={9} lg={7}>
                 {content && (
-                  <Card className="shadow" ref={mdRef}>
+                  <Card
+                    className="shadow round for-border for-color"
+                    ref={mdRef}
+                  >
                     <Card.Body>
                       {isEdit ? (
                         <Editor
