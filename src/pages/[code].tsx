@@ -98,16 +98,13 @@ const SnipDown = ({ code, snip }: DataProps) => {
     if (code && hasToken === "false") {
       ;(async () => {
         try {
-          const resp = await fetch(
-            `${process.env.NEXT_PUBLIC_CORS_POXY}/authenticate/${code}`,
-            {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-            }
-          )
+          const resp = await fetch(`/api/authenticate/${code}`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          })
           const data = await resp.json()
           if (data && data.token) {
             var url = window.location.href
@@ -257,7 +254,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const handlePng = () => {
     if (mdRef) {
       html2canvas(mdRef.current, {
-        proxy: `${process.env.NEXT_PUBLIC_CORS_POXY_IMAGE}`,
+        proxy: `/api/image`,
       }).then((canvas: any) => {
         const link = canvas.toDataURL("image/png")
         download(
