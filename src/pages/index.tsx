@@ -1,4 +1,4 @@
-import SnipDown from "./[code]"
+import SnipDown from "./[id]"
 import { GetServerSideProps } from "next"
 
 interface DataProps {

@@ -10,9 +10,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   })
   const blob = await imgRes.blob()
   const buff = await blob.arrayBuffer()
+  res
   res.send(
     `data:${imgRes.headers.get("content-type")};base64,${Buffer.from(
-      buff,
+      buff
     ).toString("base64")}`
   )
+  res.setHeader("content-type", imgRes.headers.get("content-type")!)
 }

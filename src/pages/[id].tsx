@@ -275,7 +275,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const handleJpeg = () => {
     if (mdRef) {
       html2canvas(mdRef.current, {
-        proxy: `${process.env.NEXT_PUBLIC_CORS_POXY_IMAGE}`,
+        proxy: `/api/image`,
       }).then((canvas: any) => {
         const link = canvas.toDataURL("image/jpeg")
         download(
