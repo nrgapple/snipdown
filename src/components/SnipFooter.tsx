@@ -46,6 +46,7 @@ const SnipFooter = () => {
               justifyContent: "center",
               alignItems: "center",
               height: "40px",
+              marginBottom: "50px"
             }}
           >
             creators of{" "}

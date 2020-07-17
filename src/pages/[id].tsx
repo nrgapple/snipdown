@@ -233,48 +233,50 @@ const SnipDown = ({ code, snip }: DataProps) => {
         snips={snips}
         logout={logout}
       />
-      {!isInitLoading && (
-        <Container fluid>
-          <Row className="justify-content-center pb-3">
-            <Col className="justify-content-sb" xs={11} md={9} lg={7}>
-              <SnipButtons
-                isEdit={isEdit}
-                isLoggedIn={isLoggedIn}
-                isLoadingGist={isLoadingGist}
-                toggleEdit={toggleEdit}
-                createGist={createGist}
-                updateGist={updateGist}
-                content={content}
-                allowEdit={allowEdit}
-                handleDownload={(ex: fileExt) =>
-                  handleDownload(ex, mdRef, content)
-                }
-              />
-            </Col>
-          </Row>
-          {isEdit && !content.id && (
+      <div className="content">
+        {!isInitLoading && (
+          <Container>
             <Row className="justify-content-center pb-3">
-              <Col xs={11} md={9} lg={7}>
-                <SnipTitle content={content} setContent={setContent} />
+              <Col className="justify-content-sb" xs={11} md={9} lg={7}>
+                <SnipButtons
+                  isEdit={isEdit}
+                  isLoggedIn={isLoggedIn}
+                  isLoadingGist={isLoadingGist}
+                  toggleEdit={toggleEdit}
+                  createGist={createGist}
+                  updateGist={updateGist}
+                  content={content}
+                  allowEdit={allowEdit}
+                  handleDownload={(ex: fileExt) =>
+                    handleDownload(ex, mdRef, content)
+                  }
+                />
               </Col>
             </Row>
-          )}
-          <Row className="justify-content-center pb-5">
-            <Col xs={11} md={9} lg={7}>
-              {content && (
-                <MDCard
-                  isEdit={isEdit}
-                  content={content}
-                  setContent={setContent}
-                  mdRef={mdRef}
-                />
-              )}
-            </Col>
-          </Row>
-        </Container>
-      )}
-      <BottomToast show={show} message={message} setShow={setShow} />
-      <SnipFooter />
+            {isEdit && !content.id && (
+              <Row className="justify-content-center pb-3">
+                <Col xs={11} md={9} lg={7}>
+                  <SnipTitle content={content} setContent={setContent} />
+                </Col>
+              </Row>
+            )}
+            <Row className="justify-content-center pb-5">
+              <Col xs={11} md={9} lg={7}>
+                {content && (
+                  <MDCard
+                    isEdit={isEdit}
+                    content={content}
+                    setContent={setContent}
+                    mdRef={mdRef}
+                  />
+                )}
+              </Col>
+            </Row>
+          </Container>
+        )}
+        <BottomToast show={show} message={message} setShow={setShow} />
+        <SnipFooter />
+      </div>
     </Layout>
   )
 }
