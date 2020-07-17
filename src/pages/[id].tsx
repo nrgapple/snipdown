@@ -1,80 +1,33 @@
 import { useEffect, useState, useRef } from "react"
-import Link from "next/link"
 import Router from "next/router"
 import Layout from "../components/Layout"
 import { GetServerSideProps } from "next"
 import { isSnipFile, camelToWords, removeExtension } from "../util"
-import { Snip, GithubUser, GistData, FileData } from "../util/types"
+import {
+  Snip,
+  GithubUser,
+  GistData,
+  FileData,
+  fileExt,
+  hasTokenType,
+} from "../util/types"
 import { Routes } from "../util/links"
 import { Octokit } from "@octokit/core"
 import { Language } from "prism-react-renderer"
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  Dropdown,
-  Row,
-  Col,
-  Card,
-  Button,
-  InputGroup,
-  FormControl,
-  NavLink,
-  ButtonGroup,
-  Spinner,
-  Toast,
-} from "react-bootstrap"
+import { Row, Col } from "react-bootstrap"
 import { Container } from "next/app"
-import Editor from "../components/Editor"
-import ReactMarkdown from "react-markdown"
-import CodeBlock from "../components/CodeBlock"
-const html2canvas = process.browser ? require("html2canvas") : null
-//@ts-ignore
-import download from "downloadjs"
-import { MarkGithubIcon } from "@primer/octicons-react"
-import PreImg from "../components/PreImg"
+import CustomNav from "../components/CustomNav"
+import SnipButtons from "../components/SnipButtons"
+import MDCard from "../components/MDCard"
+import Branding from "../util/banding"
+import BottomToast from "../components/BottomToast"
+import SnipTitle from "../components/SnipTitle"
+import { handleDownload } from "../util/helpers"
 
 interface DataProps {
   code?: string
   snip?: Snip
 }
-
-type hasTokenType = "waiting" | "false" | "true"
-
-const defaultText = `# 📝 SnipDown ⬇️
-
-Explain something and **share** it in a _beautiful_, linkable format.
-
-1. Login to Github
-2. Explain something
-  \`\`\`java
-  public static void main(String[] args) {
-  }
-  \`\`\`
-3. Click \`Create\`(saves to your GitHub gists).
-4. Export to PNG
-5. Tweet it out!
-
-### Make links: 
-
-[This site](https://snipdown.app)
-
-### Add images:
-
-![snipdown-logo](https://user-images.githubusercontent.com/10817537/87622131-6ceacf80-c6f0-11ea-8fb2-d9642e2b71f3.png)
-
-### Create Tables:
-
-|Save|gists|
-|-----|----|
-|PNG|<id>|
-|JPG|<id>|
-|SVG|<id>|
-
-## Share Snips
-
-You can make a snip, save it and share the url for a beautiful way to explain things to others in markdown. Everything is saved to your [GitHub gists](https://gist.github.com).
-`
 
 const SnipDown = ({ code, snip }: DataProps) => {
   const [isInitLoading, setIsInitLoading] = useState<boolean>(true)
@@ -86,7 +39,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
   const [snips, setSnips] = useState<Snip[]>()
   const [content, setContent] = useState<Snip>({
     title: "",
-    content: defaultText,
+    content: Branding.defaultMDText,
     id: "",
   } as Snip)
   const [isEdit, setIsEdit] = useState(true)
@@ -253,44 +206,16 @@ const SnipDown = ({ code, snip }: DataProps) => {
     localStorage.removeItem("auth_token")
   }
 
-  const handlePng = () => {
-    if (mdRef) {
-      html2canvas(mdRef.current, {
-        proxy: `/api/image`,
-      }).then((canvas: any) => {
-        const link = canvas.toDataURL("image/png")
-        download(
-          link,
-          `${
-            content.title
-              ? content.title.split(".")[0]
-              : `snipdow-${new Date().toTimeString()}`
-          }.png`
-        )
-      })
-    }
+  const toggleEdit = () => {
+    setIsEdit(!isEdit)
   }
 
-  const handleJpeg = () => {
-    if (mdRef) {
-      html2canvas(mdRef.current, {
-        proxy: `/api/image`,
-      }).then((canvas: any) => {
-        const link = canvas.toDataURL("image/jpeg")
-        download(
-          link,
-          `${
-            content.title
-              ? content.title.split(".")[0]
-              : `snipdow-${new Date().toTimeString()}`
-          }.jpeg`
-        )
-      })
-    }
-  }
-
-  const allowEdit = () => {
-    return !snip || !snip.id || (snips && snips?.find((x) => x.id === snip.id))
+  const allowEdit = (): boolean => {
+    return !!(
+      !snip ||
+      !snip.id ||
+      (snips && snips?.find((x) => x.id === snip.id))
+    )
   }
 
   return (
@@ -302,62 +227,12 @@ const SnipDown = ({ code, snip }: DataProps) => {
           : undefined
       }
     >
-      <Navbar>
-        <Navbar.Brand>
-          <img
-            style={{ marginRight: "4px" }}
-            src="logo.png"
-            height="25px"
-            width="25px"
-          />
-          SnipDown
-        </Navbar.Brand>
-        <Nav className="mr-auto">
-          {snips && (
-            <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
-              {snips.map((x, i) => (
-                <Link href="/[id]" as={`/${x.id}`} key={i} passHref>
-                  <NavDropdown.Item key={i}>
-                    {camelToWords(removeExtension(x.title))}
-                  </NavDropdown.Item>
-                </Link>
-              ))}
-            </NavDropdown>
-          )}
-          <Link href="/" passHref>
-            <NavLink>New</NavLink>
-          </Link>
-        </Nav>
-        <Nav>
-          {isLoggedIn ? (
-            user && (
-              <Dropdown id="collasible-nav-dropdown" alignRight>
-                <Dropdown.Toggle variant="clear">
-                  <img
-                    width="30px"
-                    src={user.avatarUrl}
-                    className="rounded-circle shadow"
-                  />
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            )
-          ) : (
-            <Nav.Link
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URI}&state=123456&response_type=code&scope=gist`}
-            >
-              Login with
-              <MarkGithubIcon className="github-logo pl-1" size="small" />
-            </Nav.Link>
-          )}
-        </Nav>
-      </Navbar>
+      <CustomNav
+        user={user}
+        isLoggedIn={isLoggedIn}
+        snips={snips}
+        logout={logout}
+      />
       <Container fluid>
         {!isInitLoading ? (
           <>
@@ -371,128 +246,37 @@ const SnipDown = ({ code, snip }: DataProps) => {
                   justifyContent: "space-between",
                 }}
               >
-                {allowEdit() && (
-                  <ButtonGroup className="pr-2">
-                    <Button
-                      className="float-left tool-button inset-shadow round"
-                      onClick={() => setIsEdit(!isEdit)}
-                      disabled={!content.content}
-                    >
-                      {isEdit ? "Preview" : "Edit"}
-                    </Button>
-                  </ButtonGroup>
-                )}
-                {isEdit &&
-                  (content.id ? (
-                    <Button
-                      className="float-right tool-button inset-shadow round"
-                      onClick={() => updateGist()}
-                    >
-                      {!isLoadingGist ? "Save" : <Spinner animation="grow" />}
-                    </Button>
-                  ) : (
-                    <Button
-                      className="float-right tool-button inset-shadow round"
-                      onClick={() => createGist()}
-                      disabled={
-                        !content.content || !content.title || !isLoggedIn
-                      }
-                    >
-                      {isLoggedIn ? (
-                        !content.title ? (
-                          "Add a Title"
-                        ) : !content.content ? (
-                          "Add some Content"
-                        ) : !isLoadingGist ? (
-                          "Create"
-                        ) : (
-                          <Spinner animation="grow" />
-                        )
-                      ) : (
-                        "Login to Save"
-                      )}
-                    </Button>
-                  ))}
-
-                {!isEdit && (
-                  <>
-                    <Dropdown as={ButtonGroup} className="bg-transparent">
-                      <Button
-                        className="tool-button inset-shadow round-left"
-                        onClick={() => handlePng()}
-                        variant="success"
-                      >
-                        Export
-                      </Button>
-
-                      <Dropdown.Toggle
-                        split
-                        variant="success"
-                        id="dropdown-split-basic"
-                        className="tool-button inset-shadow round-right"
-                      />
-                      <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => handlePng()}>
-                          PNG
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => handleJpeg()}>
-                          JPEG
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </>
-                )}
+                <SnipButtons
+                  isEdit={isEdit}
+                  isLoggedIn={isLoggedIn}
+                  isLoadingGist={isLoadingGist}
+                  toggleEdit={toggleEdit}
+                  createGist={createGist}
+                  updateGist={updateGist}
+                  content={content}
+                  allowEdit={allowEdit}
+                  handleDownload={(ex: fileExt) =>
+                    handleDownload(ex, mdRef, content)
+                  }
+                />
               </Col>
             </Row>
             {isEdit && !content.id && (
               <Row className="justify-content-center pb-3">
                 <Col xs={11} md={9} lg={7}>
-                  <InputGroup>
-                    <FormControl
-                      placeholder="Title"
-                      aria-label="Title"
-                      aria-describedby="basic-addon2"
-                      onChange={(e) =>
-                        setContent({
-                          ...content,
-                          title: e.currentTarget.value,
-                        })
-                      }
-                      value={content.title}
-                      className="round title-input inset-shadow input-shadow"
-                    />
-                  </InputGroup>
+                  <SnipTitle content={content} setContent={setContent} />
                 </Col>
               </Row>
             )}
             <Row className="justify-content-center pb-5">
               <Col xs={11} md={9} lg={7}>
                 {content && (
-                  <Card
-                    className="shadow round for-border for-color"
-                    ref={mdRef}
-                  >
-                    <Card.Body>
-                      {isEdit ? (
-                        <Editor
-                          style={{ minHeight: "60vh" }}
-                          language="markdown"
-                          value={content.content}
-                          onChange={(value) =>
-                            setContent({ ...content, content: value })
-                          }
-                        />
-                      ) : (
-                        <ReactMarkdown
-                          source={content.content}
-                          renderers={{
-                            code: CodeBlock,
-                            image: PreImg,
-                          }}
-                        />
-                      )}
-                    </Card.Body>
-                  </Card>
+                  <MDCard
+                    isEdit={isEdit}
+                    content={content}
+                    setContent={setContent}
+                    mdRef={mdRef}
+                  />
                 )}
               </Col>
             </Row>
@@ -500,22 +284,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         ) : (
           <div />
         )}
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Toast
-            onClose={() => setShow(false)}
-            show={show}
-            delay={3000}
-            autohide
-          >
-            <Toast.Body>{message}</Toast.Body>
-          </Toast>
-        </div>
+        <BottomToast show={show} message={message} setShow={setShow} />
       </Container>
     </Layout>
   )

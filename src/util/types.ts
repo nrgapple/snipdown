@@ -26,3 +26,7 @@ export interface GistData {
   description: string
   files: FilesData
 }
+
+export type hasTokenType = "waiting" | "false" | "true"
+
+export type fileExt = "png" | "jpeg"
