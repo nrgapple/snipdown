@@ -57,7 +57,7 @@ Explain something and **share** it in a _beautiful_, linkable format.
 
 ### Make links: 
 
-[This site](https://snipdown.vercel.app)
+[This site](https://snipdown.app)
 
 ### Add images:
 
@@ -79,6 +79,7 @@ You can make a snip, save it and share the url for a beautiful way to explain th
 const SnipDown = ({ code, snip }: DataProps) => {
   const [isInitLoading, setIsInitLoading] = useState<boolean>(true)
   const [isLoadingGist, setIsLoadingGist] = useState<boolean>(false)
+  const [isLoadingLogin, setIsLoadingLogin] = useState<boolean>(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [token, setToken] = useState("")
   const [hasToken, setHasToken] = useState<hasTokenType>("waiting")
@@ -96,6 +97,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
 
   useEffect(() => {
     if (code && hasToken === "false") {
+      setIsLoggedIn(true)
       ;(async () => {
         try {
           const resp = await fetch(`/api/authenticate/${code}`, {
@@ -110,6 +112,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
             var url = window.location.href
             url = url.split("?")[0]
             window.location.href = url
+            setIsLoggedIn(false)
             localStorage.setItem("auth_token", data.token)
             setToken(data.token)
             setIsLoggedIn(true)
@@ -342,6 +345,8 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 </Dropdown.Menu>
               </Dropdown>
             )
+          ) : isLoadingLogin ? (
+            <Spinner animation="grow" />
           ) : (
             <Nav.Link
               style={{
