@@ -1,5 +1,5 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { tomorrow as style } from "react-syntax-highlighter/dist/esm/styles/prism"
+import { atomDark as style } from "react-syntax-highlighter/dist/esm/styles/prism"
 
 interface Props {
   language: string
