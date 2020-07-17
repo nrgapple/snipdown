@@ -464,7 +464,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                 </Col>
               </Row>
             )}
-            <Row className="justify-content-center">
+            <Row className="justify-content-center pb-5">
               <Col xs={11} md={9} lg={7}>
                 {content && (
                   <Card className="shadow" ref={mdRef}>
