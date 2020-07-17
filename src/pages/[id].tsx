@@ -459,7 +459,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
                         })
                       }
                       value={content.title}
-                      className="round title-input inset-shadow"
+                      className="round title-input inset-shadow input-shadow"
                     />
                   </InputGroup>
                 </Col>
