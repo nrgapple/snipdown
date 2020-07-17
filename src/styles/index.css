@@ -6,6 +6,10 @@ textarea {
   outline: none;
 }
 
+html {
+  overflow: hidden;
+}
+
 html,
 body {
   height: 100vh;
