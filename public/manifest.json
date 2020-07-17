@@ -1,7 +1,13 @@
 {
   "short_name": "SnipDown",
   "name": "SnipDown",
-  "icons": [],
+  "icons": [
+    {
+      "src": "/logo-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#fff",

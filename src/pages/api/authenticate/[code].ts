@@ -42,6 +42,7 @@ function authenticate(
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  console.log("sdfgsdfgsd")
   const {
     query: { code },
   } = req
