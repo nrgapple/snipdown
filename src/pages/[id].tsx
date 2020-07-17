@@ -127,7 +127,6 @@ const SnipDown = ({ code, snip }: DataProps) => {
     try {
       const token = localStorage.getItem("auth_token") ?? ""
       if (token && !isLoggedIn) {
-        console.log("here")
         setToken(token)
         setIsLoggedIn(true)
         setHasToken("true")
