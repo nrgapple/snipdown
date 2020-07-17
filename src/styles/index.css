@@ -21,6 +21,43 @@ button {
   box-shadow: none !important;
 }
 
+.tool-button {
+  background: transparent !important;
+  border: none !important;
+  color: #2a363b !important;
+}
+
+.no-border {
+  border: none !important;
+}
+
+.title-input {
+  border: none !important;
+  background: transparent !important;
+}
+
+.dropdown-menu {
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: 0px 0px 25px 0 rgba(0, 0, 0, 0.4);
+}
+
+.inset-shadow {
+  box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.inset-shadow:hover {
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.inset-shadow:focus {
+  box-shadow: 0px 0px 25px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+.inset-shadow:active {
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
 .snip-header {
   background-color: transparent !important;
 }
@@ -62,6 +99,16 @@ button {
 
 .round {
   border-radius: 20px !important;
+}
+
+.round-left {
+  border-top-left-radius: 20px !important;
+  border-bottom-left-radius: 20px !important;
+}
+
+.round-right {
+  border-top-right-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
 }
 
 .for-border {
