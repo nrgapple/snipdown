@@ -1,0 +1,62 @@
+.crackContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  width: 100px;
+  overflow: hidden;
+}
+
+.crackOutside {
+  position: relative;
+  font-family: "Montserrat", Arial, sans-serif;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.crackOutside .crackInside {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  -webkit-clip-path: polygon(10% 0%, 44% 0%, 70% 100%, 55% 100%);
+  clip-path: polygon(10% 0%, 44% 0%, 70% 100%, 55% 100%);
+}
+
+.crackOutside::before,
+.crackOutside::after {
+  content: attr(datatext);
+  position: absolute;
+}
+
+.crackOutside::before {
+  animation: crack1 2s linear forwards;
+  -webkit-clip-path: polygon(0% 0%, 10% 0%, 55% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 10% 0%, 55% 100%, 0% 100%);
+}
+
+.crackOutside::after {
+  animation: crack2 3s linear forwards;
+  -webkit-clip-path: polygon(44% 0%, 100% 0%, 100% 100%, 70% 100%);
+  clip-path: polygon(44% 0%, 100% 0%, 100% 100%, 70% 100%);
+}
+
+@keyframes crack1 {
+  0%,
+  98% {
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    transform: translate(-51%, -46%);
+  }
+}
+
+@keyframes crack2 {
+  0%,
+  98% {
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    transform: translate(-48.5%, -53%);
+  }
+}

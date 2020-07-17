@@ -3,6 +3,7 @@ import Link from "next/link"
 import { camelToWords, removeExtension } from "../util"
 import { MarkGithubIcon } from "@primer/octicons-react"
 import { Snip, GithubUser } from "../util/types"
+import styles from "./CustomNav.module.css"
 
 interface Props {
   snips: Snip[] | undefined
@@ -23,11 +24,11 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
           height="25px"
           width="25px"
         />
-        <div className="crack-container">
+        <div className={styles.crackContainer}>
           {
             //@ts-ignore
-            <span className="crack-outside" datatext="SnipDown">
-              <span className="crack-inside">SnipDown</span>
+            <span className={styles.crackOutside} datatext="SnipDown">
+              <span className={styles.crackInside}>SnipDown</span>
             </span>
           }
         </div>
