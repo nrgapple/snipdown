@@ -1,4 +1,4 @@
-import { Toast } from "react-bootstrap"
+import { Toast, ToastHeader } from "react-bootstrap"
 
 interface Props {
   show: boolean
@@ -18,7 +18,16 @@ const BottomToast = ({ show, message, setShow }: Props) => {
         right: 0,
       }}
     >
-      <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>
+      <Toast
+        style={{
+          width: "250px",
+          zIndex: 100000,
+        }}
+        onClose={() => setShow(false)}
+        show={show}
+        delay={3000}
+        autohide
+      >
         <Toast.Body>{message}</Toast.Body>
       </Toast>
     </div>
