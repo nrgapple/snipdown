@@ -14,14 +14,23 @@ interface Props {
 const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
   return (
     <Navbar>
-      <Navbar.Brand>
+      <Navbar.Brand
+        style={{ display: "flex", alignItems: "center", marginRight: "0" }}
+      >
         <img
           style={{ marginRight: "4px" }}
           src="logo.png"
           height="25px"
           width="25px"
         />
-        SnipDown
+        <div className="crack-container">
+          {
+            //@ts-ignore
+            <span className="crack-outside" datatext="SnipDown">
+              <span className="crack-inside">SnipDown</span>
+            </span>
+          }
+        </div>
       </Navbar.Brand>
       <Nav className="mr-auto">
         {snips && (
