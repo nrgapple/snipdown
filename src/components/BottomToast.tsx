@@ -10,9 +10,12 @@ const BottomToast = ({ show, message, setShow }: Props) => {
   return (
     <div
       style={{
-        width: "100%",
         display: "flex",
         justifyContent: "center",
+        position: "absolute",
+        bottom: 10,
+        left: 0,
+        right: 0,
       }}
     >
       <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>

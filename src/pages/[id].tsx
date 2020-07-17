@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react"
-import Router from "next/router"
+import { useRouter } from "next/router"
 import Layout from "../components/Layout"
 import { GetServerSideProps } from "next"
 import { isSnipFile, camelToWords, removeExtension } from "../util"
@@ -30,6 +30,7 @@ interface DataProps {
 }
 
 const SnipDown = ({ code, snip }: DataProps) => {
+  const router = useRouter()
   const [isInitLoading, setIsInitLoading] = useState<boolean>(true)
   const [isLoadingGist, setIsLoadingGist] = useState<boolean>(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -61,13 +62,11 @@ const SnipDown = ({ code, snip }: DataProps) => {
           })
           const data = await resp.json()
           if (data && data.token) {
-            var url = window.location.href
-            url = url.split("?")[0]
-            window.location.href = url
             setIsLoggedIn(false)
             localStorage.setItem("auth_token", data.token)
             setToken(data.token)
             setIsLoggedIn(true)
+            router.push("/")
           }
         } catch (e) {
           console.error(e)
@@ -188,7 +187,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
         files: { [content.title]: file },
       })
       const { id } = resp.data
-      Router.push("/[id]", `/${id}`)
+      router.push(`/${id}`)
       setMessage("Created")
       setShow(true)
     } catch (e) {
