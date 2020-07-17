@@ -27,18 +27,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         }
       )
   }
-
-  // const imgRes = await fetch(url as string, {
-  //   method: "GET",
-  // })
-  // const blob = await imgRes.blob()
-  // const text = await blob.text()
-  // res.setHeader("Content-Type", imgRes.headers.get("content-type")!)
-  // res.setHeader("Content-Length", blob.size)
-  // res.send(
-  //   `data:${imgRes.headers.get("content-type")};base64,${Buffer.from(
-  //     text,
-  //     "binary"
-  //   ).toString("binary")}`
-  // )
 }
