@@ -119,10 +119,6 @@ button {
   border: none !important;
 }
 
-.for-color {
-  background: linear-gradient(168deg, #ffffff 0%, #f0f1f1 100%) !important;
-}
-
 .justify-content-sb {
   display: flex;
   justify-content: space-between;
