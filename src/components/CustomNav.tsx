@@ -56,7 +56,7 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
               <img
                 height="30px"
                 width="30px"
-                src="logo.png"
+                src={user.avatarUrl}
                 className="rounded-circle shadow"
               />
             </Dropdown.Toggle>
