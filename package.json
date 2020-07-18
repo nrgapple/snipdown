@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.20",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "typescript-plugin-css-modules": "^2.4.0"
   }
 }
