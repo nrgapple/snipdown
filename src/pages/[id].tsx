@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/router"
 import Layout from "../components/Layout"
 import { GetServerSideProps } from "next"
@@ -227,13 +227,13 @@ const SnipDown = ({ code, snip }: DataProps) => {
           : undefined
       }
     >
-      <CustomNav
-        user={user}
-        isLoggedIn={isLoggedIn}
-        snips={snips}
-        logout={logout}
-      />
       <div className="content">
+        <CustomNav
+          user={user}
+          isLoggedIn={isLoggedIn}
+          snips={snips}
+          logout={logout}
+        />
         {!isInitLoading && (
           <Container>
             <Row className="justify-content-center pb-3">
