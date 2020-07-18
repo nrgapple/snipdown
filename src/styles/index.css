@@ -39,6 +39,10 @@ html body {
   overflow-x: hidden;
 }
 
+.nav-toggle {
+  height: 35px !important;
+}
+
 button {
   outline: none;
   box-shadow: none !important;
