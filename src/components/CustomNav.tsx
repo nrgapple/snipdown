@@ -14,12 +14,12 @@ interface Props {
 
 const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
   return (
-    <Navbar style={{ height: "70px" }}>
+    <Navbar>
       <Navbar.Brand
         style={{ display: "flex", alignItems: "center", marginRight: "0" }}
       >
         <img
-          style={{ marginRight: "4px" }}
+          style={{ marginRight: "4px", zIndex: 100000 }}
           src="logo.png"
           height="25px"
           width="25px"
