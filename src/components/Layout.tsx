@@ -26,6 +26,8 @@ const Layout = ({ children, title, description, image, url }: Props) => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <link rel="apple-touch-icon" sizes="192x192" href="/logo-bg-192.png" />
+        <meta name="theme-color" content="#fad961" />
         <meta
           property="og:title"
           content={title ?? defaultTitle}
