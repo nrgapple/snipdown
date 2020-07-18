@@ -14,7 +14,7 @@ interface Props {
 
 const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
   return (
-    <Navbar>
+    <Navbar style={{ height: "70px" }}>
       <Navbar.Brand
         style={{ display: "flex", alignItems: "center", marginRight: "0" }}
       >
