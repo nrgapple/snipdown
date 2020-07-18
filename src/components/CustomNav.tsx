@@ -19,7 +19,7 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
         style={{ display: "flex", alignItems: "center", marginRight: "0" }}
       >
         <img
-          style={{ marginRight: "4px", zIndex: 100000 }}
+          style={{ marginRight: "4px" }}
           src="logo.png"
           height="25px"
           width="25px"
@@ -35,7 +35,11 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
       </Navbar.Brand>
       <Nav className="mr-auto">
         {snips && (
-          <NavDropdown title="Your Snips" id="collasible-nav-dropdown">
+          <NavDropdown
+            title="Your Snips"
+            id="collasible-nav-dropdown"
+            className="nav-img"
+          >
             {snips.map((x, i) => (
               <Link href="/[id]" as={`/${x.id}`} key={i} passHref>
                 <NavDropdown.Item key={i}>

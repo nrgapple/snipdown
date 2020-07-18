@@ -50,6 +50,10 @@ button {
   color: #2a363b !important;
 }
 
+.navbar-nav {
+  height: 32px !important;
+}
+
 .no-border {
   border: none !important;
 }
