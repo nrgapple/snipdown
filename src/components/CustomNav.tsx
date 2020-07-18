@@ -50,7 +50,7 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
         </Link>
       </Nav>
       <Nav>
-        {true ? (
+        {isLoggedIn && user ? (
           <Dropdown id="collasible-nav-dropdown" alignRight>
             <Dropdown.Toggle className="nav-toggle" variant="clear">
               <img
