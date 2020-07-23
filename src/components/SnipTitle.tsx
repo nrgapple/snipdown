@@ -1,5 +1,6 @@
 import { InputGroup, FormControl } from "react-bootstrap"
 import { Snip } from "../util/types"
+import { memo } from "react"
 
 interface Props {
   content: Snip
@@ -26,4 +27,4 @@ const SnipTitle = ({ content, setContent }: Props) => {
   )
 }
 
-export default SnipTitle
+export default memo(SnipTitle)

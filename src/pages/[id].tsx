@@ -229,6 +229,7 @@ const SnipDown = ({ code, snip }: DataProps) => {
     >
       <div className="content">
         <CustomNav
+          isLoading={isInitLoading}
           user={user}
           isLoggedIn={isLoggedIn}
           snips={snips}

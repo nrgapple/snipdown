@@ -1,4 +1,5 @@
 import { Toast, ToastHeader } from "react-bootstrap"
+import { memo } from "react"
 
 interface Props {
   show: boolean
@@ -34,4 +35,4 @@ const BottomToast = ({ show, message, setShow }: Props) => {
   )
 }
 
-export default BottomToast
+export default memo(BottomToast)

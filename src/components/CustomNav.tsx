@@ -4,15 +4,17 @@ import { camelToWords, removeExtension } from "../util"
 import { MarkGithubIcon } from "@primer/octicons-react"
 import { Snip, GithubUser } from "../util/types"
 import styles from "./CustomNav.module.css"
+import { memo } from "react"
 
 interface Props {
+  isLoading: boolean
   snips: Snip[] | undefined
   isLoggedIn: boolean
   user: GithubUser | undefined
   logout: () => void
 }
 
-const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
+const CustomNav = ({ isLoading, snips, isLoggedIn, user, logout }: Props) => {
   return (
     <Navbar style={{ height: "70px" }}>
       <Navbar.Brand
@@ -81,4 +83,4 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
   )
 }
 
-export default CustomNav
+export default memo(CustomNav)

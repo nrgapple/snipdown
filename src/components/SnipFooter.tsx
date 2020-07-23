@@ -1,4 +1,5 @@
 import { Row, Col } from "react-bootstrap"
+import { memo } from "react"
 
 interface Props {}
 
@@ -61,4 +62,4 @@ const SnipFooter = () => {
   )
 }
 
-export default SnipFooter
+export default memo(SnipFooter)

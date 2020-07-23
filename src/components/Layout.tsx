@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react"
+import React, { ReactNode, memo } from "react"
 import Head from "next/head"
 import { Uris } from "../util/links"
 import Branding from "../util/banding"
@@ -94,4 +94,4 @@ const Layout = ({ children, title, description, image, url }: Props) => {
   )
 }
 
-export default Layout
+export default memo(Layout)
