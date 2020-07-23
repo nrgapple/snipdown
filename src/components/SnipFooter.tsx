@@ -5,7 +5,7 @@ interface Props {}
 const SnipFooter = () => {
   return (
     <Row className="justify-content-center">
-      <Col xs={11} md={9} lg={7} style={{ height: "230px" }}>
+      <Col xs={11} md={9} lg={7}>
         <div
           style={{
             display: "flex",

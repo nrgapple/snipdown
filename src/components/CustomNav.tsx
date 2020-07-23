@@ -16,14 +16,14 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
   return (
     <Navbar style={{ height: "70px" }}>
       <Navbar.Brand
-        style={{ display: "flex", alignItems: "center", marginRight: "0" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginRight: "0",
+          height: "100%",
+        }}
       >
-        <img
-          style={{ marginRight: "4px" }}
-          src="logo.png"
-          height="25px"
-          width="25px"
-        />
+        <img src="logo.png" height="25px" width="25px" />
         <div className={styles.crackContainer}>
           {
             //@ts-ignore
@@ -50,21 +50,20 @@ const CustomNav = ({ snips, isLoggedIn, user, logout }: Props) => {
         </Link>
       </Nav>
       <Nav>
-        {isLoggedIn ? (
-          user && (
-            <Dropdown id="collasible-nav-dropdown" alignRight>
-              <Dropdown.Toggle variant="clear">
-                <img
-                  width="30px"
-                  src={user.avatarUrl}
-                  className="rounded-circle shadow"
-                />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          )
+        {isLoggedIn && user ? (
+          <Dropdown id="collasible-nav-dropdown" alignRight>
+            <Dropdown.Toggle className="nav-toggle" variant="clear">
+              <img
+                height="30px"
+                width="30px"
+                src="logo.png"
+                className="rounded-circle shadow"
+              />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         ) : (
           <Nav.Link
             style={{

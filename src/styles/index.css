@@ -33,10 +33,14 @@ html body {
 }
 
 .content {
-  height: calc(100vh - 56px);
+  height: 100vh;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
+}
+
+.nav-toggle {
+  height: 35px !important;
 }
 
 button {
@@ -48,6 +52,10 @@ button {
   background: transparent !important;
   border: none !important;
   color: #2a363b !important;
+}
+
+.navbar-nav {
+  height: 32px !important;
 }
 
 .no-border {
