@@ -8,7 +8,7 @@
 }
 
 .crackOutside {
-  position: relative;
+  position: absolute;
   font-family: "Montserrat", Arial, sans-serif;
   user-select: none;
   white-space: nowrap;
