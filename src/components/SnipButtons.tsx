@@ -1,6 +1,6 @@
 import { ButtonGroup, Button, Spinner, Dropdown } from "react-bootstrap"
 import { Snip, fileExt } from "../util/types"
-import { Fragment } from "react"
+import { Fragment, memo } from "react"
 
 interface Props {
   isEdit: boolean
@@ -100,4 +100,4 @@ const SnipButtons = ({
   )
 }
 
-export default SnipButtons
+export default memo(SnipButtons)

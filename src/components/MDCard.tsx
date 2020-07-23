@@ -4,6 +4,7 @@ import CodeBlock from "./CodeBlock"
 import PreImg from "./PreImg"
 import ReactMarkdown from "react-markdown"
 import { Snip } from "../util/types"
+import { memo } from "react"
 
 interface Props {
   isEdit: boolean
@@ -37,4 +38,4 @@ const MDCard = ({ isEdit, setContent, content, mdRef }: Props) => {
   )
 }
 
-export default MDCard
+export default memo(MDCard)

@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   ReactChild,
+  memo,
 } from "react"
 import CSS from "csstype"
 
@@ -74,4 +75,4 @@ const Editor = ({
   )
 }
 
-export default Editor
+export default memo(Editor)

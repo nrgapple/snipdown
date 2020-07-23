@@ -1,4 +1,5 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
+import { memo } from "react"
 
 interface Props {
   language: string
@@ -16,4 +17,4 @@ const CodeBlock = ({ language, value }: Props) => {
   )
 }
 
-export default CodeBlock
+export default memo(CodeBlock)
